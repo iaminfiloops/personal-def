@@ -6,11 +6,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PlusIcon, Pencil, Trash2, ArrowLeft, Search } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/contexts/AuthContext";
 
-// Sample companies data
+// Sample companies data (will be replaced with Supabase data in production)
 const initialCompanies = [
   {
     id: 1,
@@ -43,21 +45,77 @@ const initialCompanies = [
 ];
 
 const AdminPortfolioEdit = () => {
+  const { user } = useAuth();
   const [companies, setCompanies] = useState(initialCompanies);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
+  // Filter companies based on search query
   const filteredCompanies = companies.filter(company => 
     company.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     company.type.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleDeleteCompany = (id: number) => {
+  // In a real implementation, this would load data from Supabase
+  useEffect(() => {
+    const fetchCompanies = async () => {
+      setIsLoading(true);
+      try {
+        // This is where you would fetch from Supabase in production
+        // Example:
+        // const { data, error } = await supabase
+        //   .from('companies')
+        //   .select('*')
+        //   .order('created_at', { ascending: false });
+        
+        // if (error) throw error;
+        // setCompanies(data);
+
+        // For now, just use our sample data with a delay to simulate fetching
+        await new Promise(resolve => setTimeout(resolve, 500));
+        setCompanies(initialCompanies);
+      } catch (error) {
+        console.error('Error fetching companies:', error);
+        toast({
+          title: 'Error loading companies',
+          description: 'Please try refreshing the page.',
+          variant: 'destructive',
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCompanies();
+  }, [user?.id]); // Re-fetch when user changes
+
+  const handleDeleteCompany = async (id: number) => {
     if (confirm("Are you sure you want to delete this company?")) {
-      setCompanies(companies.filter(company => company.id !== id));
-      toast({
-        title: "Company deleted",
-        description: "The company has been successfully deleted.",
-      });
+      try {
+        // In production, this would be a Supabase delete operation
+        // Example:
+        // const { error } = await supabase
+        //   .from('companies')
+        //   .delete()
+        //   .eq('id', id);
+        
+        // if (error) throw error;
+        
+        // For now, just update the local state
+        setCompanies(companies.filter(company => company.id !== id));
+        
+        toast({
+          title: "Company deleted",
+          description: "The company has been successfully deleted.",
+        });
+      } catch (error) {
+        console.error('Error deleting company:', error);
+        toast({
+          title: 'Error deleting company',
+          description: 'Please try again.',
+          variant: 'destructive',
+        });
+      }
     }
   };
 
@@ -100,67 +158,73 @@ const AdminPortfolioEdit = () => {
             
             <Card>
               <CardContent className="p-0">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Company</TableHead>
-                      <TableHead>Type</TableHead>
-                      <TableHead>Year</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredCompanies.length > 0 ? (
-                      filteredCompanies.map(company => (
-                        <TableRow key={company.id}>
-                          <TableCell className="font-medium">{company.name}</TableCell>
-                          <TableCell>{company.type}</TableCell>
-                          <TableCell>{company.year}</TableCell>
-                          <TableCell>
-                            <span 
-                              className={`inline-block px-2 py-1 rounded text-xs font-medium ${
-                                company.status === "Active" 
-                                  ? "bg-green-100 text-green-800" 
-                                  : "bg-amber-100 text-amber-800"
-                              }`}
-                            >
-                              {company.status}
-                            </span>
-                          </TableCell>
-                          <TableCell className="text-right space-x-2">
-                            <Button 
-                              variant="ghost" 
-                              size="sm"
-                              className="h-8 w-8 p-0"
-                              asChild
-                            >
-                              <Link to={`/admin/portfolio/edit/${company.id}`}>
-                                <Pencil className="h-4 w-4" />
-                                <span className="sr-only">Edit</span>
-                              </Link>
-                            </Button>
-                            <Button 
-                              variant="ghost" 
-                              size="sm"
-                              className="h-8 w-8 p-0 text-destructive hover:text-destructive/90 hover:bg-destructive/10"
-                              onClick={() => handleDeleteCompany(company.id)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                              <span className="sr-only">Delete</span>
-                            </Button>
+                {isLoading ? (
+                  <div className="py-20 flex justify-center">
+                    <div className="animate-spin w-8 h-8 border-4 border-accent border-t-transparent rounded-full"></div>
+                  </div>
+                ) : (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Company</TableHead>
+                        <TableHead>Type</TableHead>
+                        <TableHead>Year</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredCompanies.length > 0 ? (
+                        filteredCompanies.map(company => (
+                          <TableRow key={company.id}>
+                            <TableCell className="font-medium">{company.name}</TableCell>
+                            <TableCell>{company.type}</TableCell>
+                            <TableCell>{company.year}</TableCell>
+                            <TableCell>
+                              <span 
+                                className={`inline-block px-2 py-1 rounded text-xs font-medium ${
+                                  company.status === "Active" 
+                                    ? "bg-green-100 text-green-800" 
+                                    : "bg-amber-100 text-amber-800"
+                                }`}
+                              >
+                                {company.status}
+                              </span>
+                            </TableCell>
+                            <TableCell className="text-right space-x-2">
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                className="h-8 w-8 p-0"
+                                asChild
+                              >
+                                <Link to={`/admin/portfolio/edit/${company.id}`}>
+                                  <Pencil className="h-4 w-4" />
+                                  <span className="sr-only">Edit</span>
+                                </Link>
+                              </Button>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                className="h-8 w-8 p-0 text-destructive hover:text-destructive/90 hover:bg-destructive/10"
+                                onClick={() => handleDeleteCompany(company.id)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                                <span className="sr-only">Delete</span>
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      ) : (
+                        <TableRow>
+                          <TableCell colSpan={5} className="text-center py-6 text-muted-foreground">
+                            No companies found.
                           </TableCell>
                         </TableRow>
-                      ))
-                    ) : (
-                      <TableRow>
-                        <TableCell colSpan={5} className="text-center py-6 text-muted-foreground">
-                          No companies found.
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
+                      )}
+                    </TableBody>
+                  </Table>
+                )}
               </CardContent>
             </Card>
           </div>

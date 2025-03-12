@@ -1,17 +1,16 @@
-
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { EditIcon, FileTextIcon, BriefcaseIcon, LogOutIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "@/components/ui/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
-// This will be replaced with Supabase authentication logic later
 const AdminDashboard = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const { user, profile, signOut, isLoading } = useAuth();
+  const navigate = useNavigate();
   const [stats, setStats] = useState({
     blogPosts: 0,
     companies: 0,
@@ -19,41 +18,30 @@ const AdminDashboard = () => {
   });
 
   useEffect(() => {
-    // Simulate authentication check and data loading
-    const checkAuth = async () => {
+    const fetchStats = async () => {
       try {
-        // This would be replaced with actual Supabase auth check
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setIsAuthenticated(true);
         setStats({
           blogPosts: 3,
-          companies: 3,
+          companies: 4,
           messages: 5
         });
       } catch (error) {
-        console.error("Authentication error:", error);
+        console.error("Error fetching stats:", error);
         toast({
-          title: "Authentication Error",
-          description: "Please log in again.",
+          title: "Error loading dashboard data",
+          description: "Please try refreshing the page.",
           variant: "destructive",
         });
-      } finally {
-        setIsLoading(false);
       }
     };
 
-    checkAuth();
+    fetchStats();
   }, []);
 
   const handleLogout = async () => {
-    // This would be replaced with actual Supabase auth signOut
     try {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      toast({
-        title: "Logged out",
-        description: "You have been successfully logged out.",
-      });
-      // In real implementation, we would redirect to login page
+      await signOut();
+      navigate("/login");
     } catch (error) {
       console.error("Logout error:", error);
       toast({
@@ -72,26 +60,6 @@ const AdminDashboard = () => {
     );
   }
 
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle>Admin Login</CardTitle>
-            <CardDescription>
-              Please sign in to access the admin dashboard.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button className="w-full bg-accent hover:bg-accent/90 text-white">
-              Login with Supabase
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -102,7 +70,7 @@ const AdminDashboard = () => {
             <div>
               <h1 className="text-3xl font-semibold mb-2">Admin Dashboard</h1>
               <p className="text-muted-foreground">
-                Manage your website content here.
+                Welcome back, {profile?.name || user?.email}
               </p>
             </div>
             <Button 
