@@ -1,12 +1,15 @@
+
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Link, useNavigate } from "react-router-dom";
-import { EditIcon, FileTextIcon, BriefcaseIcon, LogOutIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { LogOutIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "@/components/ui/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import DashboardStats from "@/components/admin/DashboardStats";
+import QuickActions from "@/components/admin/QuickActions";
+import RecentActivity from "@/components/admin/RecentActivity";
 
 const AdminDashboard = () => {
   const { user, profile, signOut, isLoading } = useAuth();
@@ -83,104 +86,15 @@ const AdminDashboard = () => {
             </Button>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg">Blog Posts</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold mb-2">{stats.blogPosts}</div>
-                <p className="text-muted-foreground text-sm mb-4">
-                  Published articles on your blog
-                </p>
-                <Button asChild className="w-full">
-                  <Link to="/admin/blog">
-                    <EditIcon className="mr-2 h-4 w-4" />
-                    Manage Posts
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg">Portfolio Companies</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold mb-2">{stats.companies}</div>
-                <p className="text-muted-foreground text-sm mb-4">
-                  Companies in your portfolio
-                </p>
-                <Button asChild className="w-full">
-                  <Link to="/admin/portfolio">
-                    <BriefcaseIcon className="mr-2 h-4 w-4" />
-                    Manage Companies
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg">Contact Messages</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold mb-2">{stats.messages}</div>
-                <p className="text-muted-foreground text-sm mb-4">
-                  Unread messages from visitors
-                </p>
-                <Button asChild className="w-full">
-                  <Link to="/admin/messages">
-                    <FileTextIcon className="mr-2 h-4 w-4" />
-                    View Messages
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
+          <DashboardStats 
+            blogPosts={stats.blogPosts} 
+            companies={stats.companies} 
+            messages={stats.messages} 
+          />
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Quick Actions</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <Button asChild className="w-full">
-                  <Link to="/admin/blog/new">
-                    Create New Blog Post
-                  </Link>
-                </Button>
-                <Button asChild className="w-full">
-                  <Link to="/admin/portfolio/new">
-                    Add New Company
-                  </Link>
-                </Button>
-                <Button asChild variant="outline" className="w-full">
-                  <Link to="/admin/profile">
-                    Edit Profile Information
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent Activity</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-3">
-                  <li className="text-sm text-muted-foreground">
-                    <span className="text-foreground font-medium">Blog post updated:</span> "The Future of Social Entrepreneurship" - 2 days ago
-                  </li>
-                  <li className="text-sm text-muted-foreground">
-                    <span className="text-foreground font-medium">New company added:</span> "HealthBridge" - 1 week ago
-                  </li>
-                  <li className="text-sm text-muted-foreground">
-                    <span className="text-foreground font-medium">Profile information updated</span> - 2 weeks ago
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
+            <QuickActions />
+            <RecentActivity />
           </div>
         </div>
       </main>
