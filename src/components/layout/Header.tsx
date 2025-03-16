@@ -1,14 +1,16 @@
 
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, UserCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
+  const { user, isAdmin } = useAuth();
 
   // Navigation links
   const navLinks = [
@@ -70,7 +72,7 @@ const Header = () => {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-8">
+        <nav className="hidden md:flex items-center space-x-6">
           {navLinks.map((link) => (
             <Link
               key={link.path}
@@ -85,6 +87,45 @@ const Header = () => {
               {link.name}
             </Link>
           ))}
+
+          {isAdmin && (
+            <Link
+              to="/admin"
+              className={cn(
+                "font-medium transition-all duration-200 ease-in-out hover:text-accent text-sm",
+                location.pathname.startsWith("/admin")
+                  ? "text-accent"
+                  : "text-foreground"
+              )}
+            >
+              Admin
+            </Link>
+          )}
+
+          {user ? (
+            <Button 
+              asChild 
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              <Link to="/admin">
+                <UserCircle className="w-4 h-4" />
+                Dashboard
+              </Link>
+            </Button>
+          ) : (
+            <Button 
+              asChild 
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              <Link to="/login">
+                <UserCircle className="w-4 h-4" />
+                Login
+              </Link>
+            </Button>
+          )}
+          
           <Button 
             asChild 
             variant="ghost"
@@ -111,7 +152,7 @@ const Header = () => {
           isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         )}
       >
-        <div className="flex flex-col items-center justify-center h-full space-y-8">
+        <div className="flex flex-col items-center justify-center h-full space-y-6">
           {navLinks.map((link) => (
             <Link
               key={link.path}
@@ -127,10 +168,53 @@ const Header = () => {
               {link.name}
             </Link>
           ))}
+
+          {isAdmin && (
+            <Link
+              to="/admin"
+              className={cn(
+                "text-2xl font-medium transition-all duration-200 ease-in-out",
+                location.pathname.startsWith("/admin")
+                  ? "text-accent"
+                  : "text-foreground"
+              )}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Admin
+            </Link>
+          )}
+
+          {user ? (
+            <Button 
+              asChild 
+              variant="outline"
+              className="flex items-center gap-2 text-lg"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <Link to="/admin">
+                <UserCircle className="w-5 h-5" />
+                Dashboard
+              </Link>
+            </Button>
+          ) : (
+            <Button 
+              asChild 
+              variant="outline"
+              className="flex items-center gap-2 text-lg"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <Link to="/login">
+                <UserCircle className="w-5 h-5" />
+                Login
+              </Link>
+            </Button>
+          )}
+          
           <Button 
             asChild 
             variant="ghost"
             className="bg-accent text-white hover:bg-accent/90 text-lg px-6 py-2 rounded-lg"
+            onClick={() => setIsMenuOpen(false)}
           >
             <Link to="/contact">Contact</Link>
           </Button>

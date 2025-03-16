@@ -37,8 +37,12 @@ const Login = () => {
     try {
       console.log("Attempting to sign in with:", email);
       await signIn(email, password);
-      console.log("Sign in successful, navigating to:", from);
-      navigate(from, { replace: true });
+      
+      // Explicit delay to ensure authentication state is updated before redirecting
+      setTimeout(() => {
+        console.log("Sign in successful, navigating to admin dashboard");
+        navigate("/admin", { replace: true });
+      }, 500);
     } catch (err: any) {
       console.error("Login error:", err.message);
       setError(err.message || "Failed to sign in");
