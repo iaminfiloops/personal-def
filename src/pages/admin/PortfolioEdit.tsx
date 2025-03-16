@@ -5,119 +5,114 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { PlusIcon, Pencil, Trash2, ArrowLeft, Search } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-// Sample companies data (will be replaced with Supabase data in production)
-const initialCompanies = [
-  {
-    id: 1,
-    name: "EcoSolutions",
-    type: "Founder",
-    year: 2018,
-    status: "Active"
-  },
-  {
-    id: 2,
-    name: "EduAccess",
-    type: "Investor",
-    year: 2020,
-    status: "Active"
-  },
-  {
-    id: 3,
-    name: "HealthBridge",
-    type: "Founder",
-    year: 2019,
-    status: "Active"
-  },
-  {
-    id: 4,
-    name: "FarmTech",
-    type: "Advisor",
-    year: 2021,
-    status: "In Development"
-  }
-];
+// Define the shape of a portfolio company
+interface Company {
+  id: string;
+  name: string;
+  type: string;
+  year: number;
+  status: string;
+  description?: string;
+  logo_url?: string;
+  created_at?: string;
+  updated_at?: string;
+}
 
 const AdminPortfolioEdit = () => {
   const { user } = useAuth();
-  const [companies, setCompanies] = useState(initialCompanies);
   const [searchQuery, setSearchQuery] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  
+  // Fetch companies from Supabase
+  const { data: companies = [], isLoading, error } = useQuery({
+    queryKey: ['companies'],
+    queryFn: async () => {
+      console.log("Fetching portfolio companies from Supabase");
+      const { data, error } = await supabase
+        .from('portfolio_companies')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (error) {
+        console.error("Error fetching companies:", error);
+        throw error;
+      }
+      
+      console.log("Fetched companies:", data);
+      return data as Company[];
+    }
+  });
+
+  // Delete company mutation
+  const deleteCompanyMutation = useMutation({
+    mutationFn: async (id: string) => {
+      console.log("Deleting company with ID:", id);
+      const { error } = await supabase
+        .from('portfolio_companies')
+        .delete()
+        .eq('id', id);
+      
+      if (error) {
+        console.error("Error deleting company:", error);
+        throw error;
+      }
+    },
+    onSuccess: () => {
+      // Invalidate the companies query to refetch the updated list
+      queryClient.invalidateQueries({ queryKey: ['companies'] });
+      toast({
+        title: "Company deleted",
+        description: "The company has been successfully deleted.",
+      });
+    },
+    onError: (error) => {
+      console.error('Delete company error:', error);
+      toast({
+        title: 'Error deleting company',
+        description: 'There was an error deleting the company. Please try again.',
+        variant: 'destructive',
+      });
+    }
+  });
 
   // Filter companies based on search query
   const filteredCompanies = companies.filter(company => 
     company.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    company.type.toLowerCase().includes(searchQuery.toLowerCase())
+    (company.type && company.type.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
-  // In a real implementation, this would load data from Supabase
-  useEffect(() => {
-    const fetchCompanies = async () => {
-      setIsLoading(true);
-      try {
-        // This is where you would fetch from Supabase in production
-        // Example:
-        // const { data, error } = await supabase
-        //   .from('companies')
-        //   .select('*')
-        //   .order('created_at', { ascending: false });
-        
-        // if (error) throw error;
-        // setCompanies(data);
-
-        // For now, just use our sample data with a delay to simulate fetching
-        await new Promise(resolve => setTimeout(resolve, 500));
-        setCompanies(initialCompanies);
-      } catch (error) {
-        console.error('Error fetching companies:', error);
-        toast({
-          title: 'Error loading companies',
-          description: 'Please try refreshing the page.',
-          variant: 'destructive',
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchCompanies();
-  }, [user?.id]); // Re-fetch when user changes
-
-  const handleDeleteCompany = async (id: number) => {
+  const handleDeleteCompany = async (id: string) => {
     if (confirm("Are you sure you want to delete this company?")) {
-      try {
-        // In production, this would be a Supabase delete operation
-        // Example:
-        // const { error } = await supabase
-        //   .from('companies')
-        //   .delete()
-        //   .eq('id', id);
-        
-        // if (error) throw error;
-        
-        // For now, just update the local state
-        setCompanies(companies.filter(company => company.id !== id));
-        
-        toast({
-          title: "Company deleted",
-          description: "The company has been successfully deleted.",
-        });
-      } catch (error) {
-        console.error('Error deleting company:', error);
-        toast({
-          title: 'Error deleting company',
-          description: 'Please try again.',
-          variant: 'destructive',
-        });
-      }
+      deleteCompanyMutation.mutate(id);
     }
   };
+
+  if (error) {
+    console.error("Error loading companies:", error);
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-grow pt-24 pb-16">
+          <div className="container mx-auto px-6">
+            <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
+              <p className="text-red-700">Error loading companies. Please try refreshing the page.</p>
+            </div>
+            <Button onClick={() => window.location.reload()}>Refresh Page</Button>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -196,12 +191,10 @@ const AdminPortfolioEdit = () => {
                                 variant="ghost" 
                                 size="sm"
                                 className="h-8 w-8 p-0"
-                                asChild
+                                onClick={() => navigate(`/admin/portfolio/edit/${company.id}`)}
                               >
-                                <Link to={`/admin/portfolio/edit/${company.id}`}>
-                                  <Pencil className="h-4 w-4" />
-                                  <span className="sr-only">Edit</span>
-                                </Link>
+                                <Pencil className="h-4 w-4" />
+                                <span className="sr-only">Edit</span>
                               </Button>
                               <Button 
                                 variant="ghost" 
@@ -218,7 +211,7 @@ const AdminPortfolioEdit = () => {
                       ) : (
                         <TableRow>
                           <TableCell colSpan={5} className="text-center py-6 text-muted-foreground">
-                            No companies found.
+                            {searchQuery ? "No matching companies found." : "No companies found. Add your first company."}
                           </TableCell>
                         </TableRow>
                       )}

@@ -20,6 +20,8 @@ import AdminPortfolioEdit from "./pages/admin/PortfolioEdit";
 // Add missing routes for blog post and portfolio item detail pages
 import BlogPost from "./pages/BlogPost";
 import PortfolioDetail from "./pages/PortfolioDetail";
+import PortfolioForm from "./components/admin/PortfolioForm";
+import BlogForm from "./components/admin/BlogForm";
 
 const queryClient = new QueryClient();
 
@@ -56,12 +58,12 @@ const App = () => (
             } />
             <Route path="/admin/blog/new" element={
               <ProtectedRoute requireAdmin>
-                <AdminBlogEdit />
+                <BlogForm />
               </ProtectedRoute>
             } />
             <Route path="/admin/blog/edit/:id" element={
               <ProtectedRoute requireAdmin>
-                <AdminBlogEdit />
+                <BlogForm />
               </ProtectedRoute>
             } />
             <Route path="/admin/portfolio" element={
@@ -71,12 +73,12 @@ const App = () => (
             } />
             <Route path="/admin/portfolio/new" element={
               <ProtectedRoute requireAdmin>
-                <AdminPortfolioEdit />
+                <PortfolioForm />
               </ProtectedRoute>
             } />
             <Route path="/admin/portfolio/edit/:id" element={
               <ProtectedRoute requireAdmin>
-                <AdminPortfolioEdit />
+                <PortfolioForm />
               </ProtectedRoute>
             } />
             
