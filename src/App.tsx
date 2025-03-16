@@ -17,6 +17,10 @@ import AdminDashboard from "./pages/admin/Dashboard";
 import AdminBlogEdit from "./pages/admin/BlogEdit";
 import AdminPortfolioEdit from "./pages/admin/PortfolioEdit";
 
+// Add missing routes for blog post and portfolio item detail pages
+import BlogPost from "./pages/BlogPost";
+import PortfolioDetail from "./pages/PortfolioDetail";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -35,6 +39,10 @@ const App = () => (
             <Route path="/contact" element={<Contact />} />
             <Route path="/login" element={<Login />} />
             
+            {/* Add routes for individual blog posts and portfolio items */}
+            <Route path="/blog/:id" element={<BlogPost />} />
+            <Route path="/portfolio/:id" element={<PortfolioDetail />} />
+            
             {/* Protected admin routes */}
             <Route path="/admin" element={
               <ProtectedRoute requireAdmin>
@@ -46,13 +54,33 @@ const App = () => (
                 <AdminBlogEdit />
               </ProtectedRoute>
             } />
+            <Route path="/admin/blog/new" element={
+              <ProtectedRoute requireAdmin>
+                <AdminBlogEdit />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/blog/edit/:id" element={
+              <ProtectedRoute requireAdmin>
+                <AdminBlogEdit />
+              </ProtectedRoute>
+            } />
             <Route path="/admin/portfolio" element={
               <ProtectedRoute requireAdmin>
                 <AdminPortfolioEdit />
               </ProtectedRoute>
             } />
+            <Route path="/admin/portfolio/new" element={
+              <ProtectedRoute requireAdmin>
+                <AdminPortfolioEdit />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/portfolio/edit/:id" element={
+              <ProtectedRoute requireAdmin>
+                <AdminPortfolioEdit />
+              </ProtectedRoute>
+            } />
             
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            {/* Catch-all route */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

@@ -6,7 +6,7 @@ import { CalendarDays, Clock, User } from "lucide-react";
 // Sample data for blog posts
 const blogPosts = [
   {
-    id: 1,
+    id: "1",
     title: "The Future of Social Entrepreneurship",
     excerpt: "How emerging technologies are reshaping the landscape of social impact ventures.",
     image: "https://via.placeholder.com/800x500",
@@ -16,7 +16,7 @@ const blogPosts = [
     author: "Emily Chen",
   },
   {
-    id: 2,
+    id: "2",
     title: "Impact Investing: Beyond Financial Returns",
     excerpt: "Exploring the dual-purpose investment strategies that generate both social and financial value.",
     image: "https://via.placeholder.com/800x500",
@@ -26,7 +26,7 @@ const blogPosts = [
     author: "Emily Chen",
   },
   {
-    id: 3,
+    id: "3",
     title: "Building Resilient Communities Through Business",
     excerpt: "Case studies of social enterprises that have strengthened local economies after crises.",
     image: "https://via.placeholder.com/800x500",
@@ -41,7 +41,7 @@ const BlogPreview = () => {
   return (
     <section className="py-16 md:py-24 bg-secondary/30">
       <div className="container mx-auto px-6">
-        <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-12">
+        <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-12 animate-fade-in">
           <div>
             <span className="chip bg-secondary text-foreground mb-3">Blog</span>
             <h2 className="text-3xl md:text-4xl font-semibold mb-4">Latest Insights</h2>
@@ -51,18 +51,19 @@ const BlogPreview = () => {
           </div>
           <Link
             to="/blog"
-            className="mt-6 md:mt-0 text-accent hover:text-accent/80 font-medium transition-colors"
+            className="mt-6 md:mt-0 text-accent hover:text-accent/80 font-medium transition-colors group flex items-center"
           >
-            View All Posts →
+            View All Posts <span className="ml-1 transition-transform group-hover:translate-x-1">→</span>
           </Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {blogPosts.map((post) => (
+          {blogPosts.map((post, index) => (
             <AnimatedCard
               key={post.id}
               hoverEffect="lift"
-              className="h-full border border-border/50"
+              className="h-full border border-border/50 opacity-0 animate-fade-in"
+              style={{ animationDelay: `${0.2 * (index + 1)}s`, animationFillMode: 'forwards' }}
             >
               <div className="h-48 overflow-hidden">
                 <img 
