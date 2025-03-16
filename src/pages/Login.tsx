@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -14,12 +14,20 @@ const Login = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
-  const { signIn } = useAuth();
+  const { signIn, user, profile } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   
   // Get the redirect path from location state, or default to "/admin"
   const from = (location.state as any)?.from?.pathname || "/admin";
+  
+  useEffect(() => {
+    // If user is already authenticated, redirect to the admin dashboard
+    if (user) {
+      console.log("User already authenticated, redirecting to admin");
+      navigate("/admin", { replace: true });
+    }
+  }, [user, navigate]);
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,9 +35,12 @@ const Login = () => {
     setIsSubmitting(true);
     
     try {
+      console.log("Attempting to sign in with:", email);
       await signIn(email, password);
+      console.log("Sign in successful, navigating to:", from);
       navigate(from, { replace: true });
     } catch (err: any) {
+      console.error("Login error:", err.message);
       setError(err.message || "Failed to sign in");
     } finally {
       setIsSubmitting(false);
@@ -53,6 +64,13 @@ const Login = () => {
             {error && (
               <div className="bg-destructive/15 text-destructive text-sm p-3 rounded-md mb-4">
                 {error}
+              </div>
+            )}
+            
+            {user && (
+              <div className="bg-green-100 text-green-800 text-sm p-3 rounded-md mb-4">
+                Already logged in as: {user.email} 
+                {profile && ` (${profile.role})`}
               </div>
             )}
             
@@ -91,6 +109,10 @@ const Login = () => {
               >
                 {isSubmitting ? "Signing in..." : "Sign In"}
               </Button>
+              
+              <div className="text-center text-sm text-muted-foreground">
+                <p>For testing, use any email and password</p>
+              </div>
             </form>
           </CardContent>
         </Card>

@@ -46,5 +46,3 @@ export const isAuthenticated = async () => {
   const { data: { session } } = await supabase.auth.getSession();
   return session !== null;
 };
-
-// You can add more auth functions as needed

@@ -28,6 +28,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
+      
+      if (session?.user) {
+        console.log("User authenticated:", session.user.email);
+      }
+      
       setIsLoading(false);
     });
 
@@ -36,6 +41,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.log(`Supabase auth event: ${event}`);
       setSession(session);
       setUser(session?.user ?? null);
+      
+      if (session?.user) {
+        console.log("Auth state changed. User authenticated:", session.user.email);
+      }
+      
       setIsLoading(false);
     });
 
@@ -53,6 +63,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       try {
+        console.log("Fetching profile for user:", user.email);
+        
         // For now, we'll create a temporary profile since we don't have a profiles table yet
         // In production, you would fetch this from a profiles table
         const tempProfile: UserProfile = {
@@ -61,6 +73,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           name: user.email?.split('@')[0] || 'User',
           role: 'admin' // For testing purposes, set all authenticated users as admins
         };
+        
+        console.log("Created temp profile with role:", tempProfile.role);
         setProfile(tempProfile);
         
         // Uncomment and modify when you have a profiles table
@@ -87,9 +101,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signIn = async (email: string, password: string) => {
     try {
       setIsLoading(true);
+      console.log("Attempting to sign in with email:", email);
+      
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       
       if (error) {
+        console.error("Sign in error:", error.message);
         toast({
           title: 'Error signing in',
           description: error.message,
@@ -98,11 +115,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         throw error;
       }
       
+      console.log("Sign in successful");
       toast({
         title: 'Signed in successfully',
         description: 'Welcome back!',
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Sign in error:', error);
       throw error;
     } finally {
@@ -116,6 +134,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const { error } = await supabase.auth.signOut();
       
       if (error) {
+        console.error("Sign out error:", error.message);
         toast({
           title: 'Error signing out',
           description: error.message,
@@ -124,10 +143,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         throw error;
       }
       
+      console.log("Sign out successful");
       toast({
         title: 'Signed out successfully',
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Sign out error:', error);
       throw error;
     } finally {

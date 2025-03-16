@@ -63,7 +63,10 @@ const BlogPreview = () => {
               key={post.id}
               hoverEffect="lift"
               className="h-full border border-border/50 opacity-0 animate-fade-in"
-              style={{ animationDelay: `${0.2 * (index + 1)}s`, animationFillMode: 'forwards' }}
+              style={{ 
+                animationDelay: `${0.2 * (index + 1)}s`, 
+                animationFillMode: 'forwards' 
+              }}
             >
               <div className="h-48 overflow-hidden">
                 <img 
