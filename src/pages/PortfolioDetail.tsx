@@ -13,6 +13,7 @@ interface Portfolio {
   name: string;
   description: string;
   logo_url?: string;
+  gallery_images?: Array<{id: string; url: string; alt: string; title: string}>;
   status: string;
   type: string;
   year: number;
@@ -96,6 +97,25 @@ const PortfolioDetail = () => {
                   </div>
                 </div>
               </div>
+              
+              {/* Gallery Images Section */}
+              {portfolio.gallery_images && portfolio.gallery_images.length > 0 && (
+                <div className="mb-12">
+                  <h2 className="text-2xl font-semibold mb-6">Gallery</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {portfolio.gallery_images.map((image) => (
+                      <div key={image.id} className="rounded-lg overflow-hidden h-64 shadow-md">
+                        <img 
+                          src={image.url} 
+                          alt={image.alt || portfolio.name} 
+                          title={image.title || portfolio.name}
+                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
               
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                 <div className="lg:col-span-2">

@@ -8,18 +8,16 @@ import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 
 interface Company {
-  id: number;
+  id: string;
   name: string;
-  logo: string;
-  image: string;
   description: string;
-  longDescription: string;
-  type: string;
   year: number;
+  type: string;
+  status: string;
   category: string;
   impact: string;
-  website: string;
   logo_url: string;
+  gallery_images?: Array<{id: string; url: string; alt: string; title: string}>;
 }
 
 const Portfolio = () => {
@@ -66,12 +64,12 @@ const Portfolio = () => {
   const types = ["All", ...new Set(companies.map(company => company.type))];
 
   // Handle navigation to company details
-  const handleViewDetails = (companyId: number, e: React.MouseEvent) => {
+  const handleViewDetails = (companyId: string, e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent any parent click events
     e.preventDefault(); // Prevent default link behavior
     navigate(`/portfolio/${companyId}`);
   };
-console.log(filteredCompanies);
+
   return (
     <>
       <Header />
@@ -151,8 +149,7 @@ console.log(filteredCompanies);
                 >
                   <div className="h-48 overflow-hidden">
                     <img
-                      src={company.logo_url
-                      }
+                      src={company.logo_url}
                       alt={company.name}
                       className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                     />

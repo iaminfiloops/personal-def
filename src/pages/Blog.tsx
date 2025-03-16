@@ -12,7 +12,7 @@ interface BlogPost {
   title: string;
   excerpt: string;
   content: string;
-  image: string;
+  image_url: string;
   category: string;
   date: string;
   readTime: string;
@@ -99,9 +99,14 @@ console.log(blogPosts)
                   >
                     <div className="md:w-2/5 h-48 md:h-auto overflow-hidden">
                       <img 
-                        src={post.image} 
+                        src={post.image_url || '/placeholder-blog.jpg'} 
                         alt={post.title}
                         className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" 
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = '/placeholder-blog.jpg';
+                          console.log("Image failed to load:", post.image_url);
+                        }}
                       />
                     </div>
                     <div className="md:w-3/5 p-6 flex flex-col">
@@ -191,9 +196,14 @@ console.log(blogPosts)
                 >
                   <div className="h-48 overflow-hidden">
                     <img 
-                      src={post.image} 
+                      src={post.image_url || '/placeholder-blog.jpg'} 
                       alt={post.title}
                       className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" 
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = '/placeholder-blog.jpg';
+                        console.log("Image failed to load:", post.image_url);
+                      }}
                     />
                   </div>
                   <div className="p-6 flex flex-col h-full">

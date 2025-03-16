@@ -37,6 +37,8 @@ interface BlogPost {
   content: string;
   date: string;
   author_id: string;
+  image_url?: string;  // Thumbnail image URL
+  images?: Array<{id: string; url: string; alt: string; title: string}>;  // Gallery images
   created_at?: string;
   updated_at?: string;
 }
@@ -52,6 +54,7 @@ const BlogForm = () => {
   const queryClient = useQueryClient();
   const [images, setImages] = useState<ImageFile[]>([]);
   const [featuredImage, setFeaturedImage] = useState<string>("");
+  const [thumbnailImage, setThumbnailImage] = useState<ImageFile | null>(null);
 
   // Initialize the form
   const form = useForm<BlogFormValues>({
@@ -98,12 +101,12 @@ const BlogForm = () => {
             content: data.content || "",
           });
 
-          // Set featured image if it exists in metadata
+          // Set thumbnail image if it exists
           if (data.image_url) {
             setFeaturedImage(data.image_url);
           }
 
-          // Fetch additional images if they exist in metadata
+          // Fetch gallery images if they exist
           if (data.images && Array.isArray(data.images)) {
             const blogImages: ImageFile[] = data.images.map((img: any) => ({
               id: img.id || crypto.randomUUID(),
@@ -132,6 +135,7 @@ const BlogForm = () => {
 
       // Upload all images that need to be uploaded
       const uploadedImages = [...images];
+      let thumbnailImageUrl = featuredImage;
       
       // Find images that need to be uploaded (have file property)
       for (let i = 0; i < uploadedImages.length; i++) {
@@ -154,18 +158,27 @@ const BlogForm = () => {
             
             if (error) throw error;
             
-            // Get public URL
+            // Get public URL using the correct storage URL format
             const { data: urlData } = supabase.storage
-              .from("blog")
+              .from('blog')
               .getPublicUrl(filePath);
+            
+            // Get the actual public URL
+            const storageUrl = urlData.publicUrl;
             
             // Update image with new URL
             uploadedImages[i] = {
               ...uploadedImages[i],
-              url: urlData.publicUrl,
+              url: storageUrl,
               isUploading: false,
               isNew: false
             };
+            
+            // If this was the featured image, update the thumbnail URL
+            if (featuredImage === image.url) {
+              thumbnailImageUrl = storageUrl;
+              setFeaturedImage(storageUrl);
+            }
           } catch (error) {
             console.error("Error uploading image:", error);
             // Mark as failed but keep in list
@@ -183,7 +196,7 @@ const BlogForm = () => {
         }
       }
       
-      // Prepare image data for storage
+      // Prepare image data for storage (gallery images)
       const imageData = uploadedImages.map(img => ({
         id: img.id,
         url: img.url,
@@ -191,16 +204,7 @@ const BlogForm = () => {
         title: img.title
       }));
 
-      // Get the featured image (first image or existing one)
-      const mainImage = featuredImage || (uploadedImages.length > 0 ? uploadedImages[0].url : "");
-
-      // Store image metadata separately
-      const imageMetadata = {
-        image_url: mainImage,
-        images: imageData
-      };
-
-      // Prepare the submission data with only fields that exist in the database
+      // Prepare the submission data with image fields
       const submissionData: BlogPost = {
         title: values.title,
         category: values.category,
@@ -208,6 +212,8 @@ const BlogForm = () => {
         content: values.content,
         date: new Date().toISOString(),
         author_id: user?.id || "",
+        image_url: thumbnailImageUrl,  // Use the updated thumbnail URL
+        images: imageData,        // These are the gallery images
         updated_at: new Date().toISOString()
       };
 
@@ -222,9 +228,6 @@ const BlogForm = () => {
           console.error("Error updating blog post:", error);
           throw error;
         }
-
-        // Update image metadata in a separate table or field if needed
-        // This would depend on your database structure
         
         toast({
           title: "Success",
@@ -394,7 +397,10 @@ const BlogForm = () => {
                     />
 
                     <div className="space-y-2">
-                      <Label>Images</Label>
+                      <Label>Gallery Images</Label>
+                      <p className="text-sm text-muted-foreground mb-2">
+                        Upload images for your blog post gallery. The selected featured image will be used as the thumbnail.
+                      </p>
                       <ImageUploader
                         images={images}
                         onChange={handleImageChange}
@@ -406,7 +412,10 @@ const BlogForm = () => {
 
                     {images.length > 0 && (
                       <div className="space-y-2">
-                        <Label>Featured Image</Label>
+                        <Label>Featured Image (Thumbnail)</Label>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Select one image as the featured image. This will be used as the blog post thumbnail.
+                        </p>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                           {images.map((image) => (
                             <div 

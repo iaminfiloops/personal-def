@@ -35,6 +35,7 @@ interface PortfolioCompany {
   status: string;
   description: string;
   logo_url: string;
+  gallery_images?: Array<{id: string; url: string; alt: string; title: string}>;
   created_at?: string;
   updated_at: string;
 }
@@ -108,34 +109,19 @@ const PortfolioForm = () => {
             });
           }
 
-          // Fetch gallery images from metadata if they exist
-          // Since we don't have a separate table for metadata yet, we'll just log this
-          console.log("Note: To store gallery images, you'll need to create a metadata table or add a JSONB column");
-          
-          // The following code is commented out since the portfolio_metadata table doesn't exist yet
-          /*
-          try {
-            // Example: Fetch gallery images from a separate metadata table or JSON field
-            const { data: metaData, error: metaError } = await supabase
-              .from("portfolio_metadata")
-              .select("gallery_images")
-              .eq("portfolio_id", id)
-              .single();
-              
-            if (!metaError && metaData && metaData.gallery_images) {
-              const galleryImgs: ImageFile[] = metaData.gallery_images.map((img: any) => ({
-                id: img.id || crypto.randomUUID(),
-                url: img.url,
-                alt: img.alt || "",
-                title: img.title || "",
-                isUploading: false
-              }));
-              setGalleryImages(galleryImgs);
-            }
-          } catch (metaError) {
-            console.log("No gallery images found or metadata table doesn't exist:", metaError);
+          // Fetch gallery images if they exist
+          if (data.gallery_images && Array.isArray(data.gallery_images)) {
+            // Use type assertion to handle the gallery_images property
+            const galleryData = (data as any).gallery_images;
+            const galleryImgs: ImageFile[] = galleryData.map((img: any) => ({
+              id: img.id || crypto.randomUUID(),
+              url: img.url,
+              alt: img.alt || "",
+              title: img.title || "",
+              isUploading: false
+            }));
+            setGalleryImages(galleryImgs);
           }
-          */
         }
       } catch (error) {
         console.error("Error fetching company:", error);
@@ -234,19 +220,15 @@ const PortfolioForm = () => {
         title: img.title
       }));
 
-      // Store image metadata separately
-      const imageMetadata = {
-        gallery_images: galleryData
-      };
-
-      // Prepare the submission data with only fields that exist in the database
-      const submissionData: PortfolioCompany = {
+      // Prepare the submission data with image fields
+      const submissionData: any = {
         name: values.name,
         type: values.type,
         year: values.year,
         status: values.status,
         description: values.description,
         logo_url: logoUrl,
+        gallery_images: galleryData,
         updated_at: new Date().toISOString()
       };
 
@@ -262,77 +244,25 @@ const PortfolioForm = () => {
           throw error;
         }
 
-        // Store gallery images metadata in a separate table or as JSON
-        // This is a placeholder - implement based on your database structure
-        try {
-          // Example: Update metadata in a separate table
-          // Uncomment and adjust if you have a metadata table
-          /*
-          const { error: metaError } = await supabase
-            .from("portfolio_metadata")
-            .upsert({
-              portfolio_id: id,
-              gallery_images: galleryData
-            });
-            
-          if (metaError) {
-            console.error("Error updating gallery metadata:", metaError);
-          }
-          */
-          
-          // For now, we'll just log the gallery data
-          console.log("Gallery data that would be stored:", galleryData);
-        } catch (metaError) {
-          console.error("Error updating gallery metadata:", metaError);
-        }
-
         toast({
           title: "Success",
           description: "Company updated successfully",
         });
       } else {
         // Create new company with created_at timestamp
-        const newCompany: PortfolioCompany = {
+        const newCompany: any = {
           ...submissionData,
           created_at: new Date().toISOString()
         };
         
         // Insert the new company
-        const { data, error } = await supabase
+        const { error } = await supabase
           .from("portfolio_companies")
-          .insert([newCompany])
-          .select();
+          .insert([newCompany]);
 
         if (error) {
           console.error("Error creating company:", error);
           throw error;
-        }
-
-        // Store gallery images metadata in a separate table or as JSON
-        // This is a placeholder - implement based on your database structure
-        if (data && data[0] && data[0].id) {
-          try {
-            // Example: Insert metadata in a separate table
-            // Uncomment and adjust if you have a metadata table
-            /*
-            const { error: metaError } = await supabase
-              .from("portfolio_metadata")
-              .insert({
-                portfolio_id: data[0].id,
-                gallery_images: galleryData
-              });
-              
-            if (metaError) {
-              console.error("Error creating gallery metadata:", metaError);
-            }
-            */
-            
-            // For now, we'll just log the gallery data
-            console.log("New company ID:", data[0].id);
-            console.log("Gallery data that would be stored:", galleryData);
-          } catch (metaError) {
-            console.error("Error creating gallery metadata:", metaError);
-          }
         }
 
         toast({
