@@ -1,107 +1,65 @@
-
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import AnimatedCard from "@/components/ui/AnimatedCard";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
-import { useState } from "react";
-
-// Sample data for companies
-const companies = [
-  {
-    id: 1,
-    name: "EcoSolutions",
-    logo: "https://via.placeholder.com/150",
-    image: "https://via.placeholder.com/800x600",
-    description: "Sustainable waste management solutions for urban communities.",
-    longDescription: "EcoSolutions transforms urban waste management through innovative recycling technologies and community engagement programs. Our circular economy approach has diverted over 10,000 tons of waste from landfills.",
-    type: "Founder",
-    year: 2018,
-    category: "Environment",
-    impact: "50+ communities served, 10,000+ tons of waste diverted",
-    website: "https://example.com",
-  },
-  {
-    id: 2,
-    name: "EduAccess",
-    logo: "https://via.placeholder.com/150",
-    image: "https://via.placeholder.com/800x600",
-    description: "Making quality education accessible in underserved regions.",
-    longDescription: "EduAccess leverages technology to bring quality educational content to students in regions with limited resources. Our digital platform works offline and has reached over 200,000 students.",
-    type: "Investor",
-    year: 2020,
-    category: "Education",
-    impact: "200,000+ students reached across 15 countries",
-    website: "https://example.com",
-  },
-  {
-    id: 3,
-    name: "HealthBridge",
-    logo: "https://via.placeholder.com/150",
-    image: "https://via.placeholder.com/800x600",
-    description: "Connecting rural communities with affordable healthcare.",
-    longDescription: "HealthBridge uses telemedicine and mobile clinics to provide healthcare access to rural communities. We've established a network of 500+ healthcare providers serving previously underserved regions.",
-    type: "Founder",
-    year: 2019,
-    category: "Healthcare",
-    impact: "75 rural communities, 100,000+ patient consultations",
-    website: "https://example.com",
-  },
-  {
-    id: 4,
-    name: "MicroFinance Plus",
-    logo: "https://via.placeholder.com/150",
-    image: "https://via.placeholder.com/800x600",
-    description: "Empowering small entrepreneurs through accessible financing and mentorship.",
-    longDescription: "MicroFinance Plus combines small business loans with comprehensive mentorship and training. Our holistic approach has helped launch over 1,000 small businesses with a 85% success rate.",
-    type: "Advisor",
-    year: 2016,
-    category: "Financial Inclusion",
-    impact: "1,000+ entrepreneurs supported, 85% business success rate",
-    website: "https://example.com",
-  },
-  {
-    id: 5,
-    name: "RenewGrid",
-    logo: "https://via.placeholder.com/150",
-    image: "https://via.placeholder.com/800x600",
-    description: "Bringing renewable energy to off-grid communities.",
-    longDescription: "RenewGrid develops and implements solar-powered microgrids for communities without access to reliable electricity. Our sustainable energy solutions have transformed economic opportunities in 30+ communities.",
-    type: "Investor",
-    year: 2021,
-    category: "Energy",
-    impact: "30+ communities powered, 45,000+ individuals benefiting",
-    website: "https://example.com",
-  },
-  {
-    id: 6,
-    name: "FoodSecure",
-    logo: "https://via.placeholder.com/150",
-    image: "https://via.placeholder.com/800x600",
-    description: "Reducing food waste and improving distribution systems.",
-    longDescription: "FoodSecure has created an innovative supply chain model that reduces food waste while improving distribution to food-insecure areas. Our technology matches excess food with those who need it most.",
-    type: "Founder",
-    year: 2017,
-    category: "Food Security",
-    impact: "500+ tons of food rescued, 200,000+ meals distributed",
-    website: "https://example.com",
-  },
-];
-
-// Categories for filtering
-const categories = ["All", "Environment", "Education", "Healthcare", "Financial Inclusion", "Energy", "Food Security"];
-const types = ["All", "Founder", "Investor", "Advisor"];
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
+interface Company {
+  id: number;
+  name: string;
+  logo: string;
+  image: string;
+  description: string;
+  longDescription: string;
+  type: string;
+  year: number;
+  category: string;
+  impact: string;
+  website: string;
+}
 
 const Portfolio = () => {
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [typeFilter, setTypeFilter] = useState("All");
-  
+  const [companies, setCompanies] = useState<Company[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchCompanies = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('portfolio_companies')
+          .select('*')
+          .order('year', { ascending: false });
+
+        if (error) throw error;
+        setCompanies(data || []);
+      } catch (err) {
+        setError('Failed to load portfolio data');
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCompanies();
+  }, []);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
   // Filter companies based on selected filters
   const filteredCompanies = companies.filter(company => {
     const matchesCategory = categoryFilter === "All" || company.category === categoryFilter;
     const matchesType = typeFilter === "All" || company.type === typeFilter;
     return matchesCategory && matchesType;
   });
+
+  // Categories for filtering
+  const categories = ["All", ...new Set(companies.map(company => company.category))];
+  const types = ["All", ...new Set(companies.map(company => company.type))];
 
   return (
     <>

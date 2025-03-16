@@ -1,4 +1,3 @@
-
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import AnimatedCard from "@/components/ui/AnimatedCard";
@@ -6,91 +5,55 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 import { CalendarDays, Clock, Search, User } from "lucide-react";
-import { useState } from "react";
-
-// Sample data for blog posts
-const blogPosts = [
-  {
-    id: 1,
-    title: "The Future of Social Entrepreneurship",
-    excerpt: "How emerging technologies are reshaping the landscape of social impact ventures.",
-    content: "Long-form content would go here...",
-    image: "https://via.placeholder.com/800x500",
-    category: "Entrepreneurship",
-    date: "May 12, 2023",
-    readTime: "5 min read",
-    author: "Emily Chen",
-    featured: true,
-  },
-  {
-    id: 2,
-    title: "Impact Investing: Beyond Financial Returns",
-    excerpt: "Exploring the dual-purpose investment strategies that generate both social and financial value.",
-    content: "Long-form content would go here...",
-    image: "https://via.placeholder.com/800x500",
-    category: "Investment",
-    date: "April 28, 2023",
-    readTime: "7 min read",
-    author: "Emily Chen",
-    featured: false,
-  },
-  {
-    id: 3,
-    title: "Building Resilient Communities Through Business",
-    excerpt: "Case studies of social enterprises that have strengthened local economies after crises.",
-    content: "Long-form content would go here...",
-    image: "https://via.placeholder.com/800x500",
-    category: "Social Impact",
-    date: "March 15, 2023",
-    readTime: "6 min read",
-    author: "Emily Chen",
-    featured: true,
-  },
-  {
-    id: 4,
-    title: "The Role of Technology in Solving Social Challenges",
-    excerpt: "How digital tools and platforms are being leveraged to address critical social needs.",
-    content: "Long-form content would go here...",
-    image: "https://via.placeholder.com/800x500",
-    category: "Technology",
-    date: "February 22, 2023",
-    readTime: "8 min read",
-    author: "Emily Chen",
-    featured: false,
-  },
-  {
-    id: 5,
-    title: "Measuring What Matters: Impact Metrics for Social Enterprises",
-    excerpt: "Frameworks and approaches to effectively measure social and environmental outcomes.",
-    content: "Long-form content would go here...",
-    image: "https://via.placeholder.com/800x500",
-    category: "Impact Measurement",
-    date: "January 10, 2023",
-    readTime: "6 min read",
-    author: "Emily Chen",
-    featured: false,
-  },
-  {
-    id: 6,
-    title: "Inclusive Business Models: Leaving No One Behind",
-    excerpt: "How social enterprises are creating opportunities for marginalized communities.",
-    content: "Long-form content would go here...",
-    image: "https://via.placeholder.com/800x500",
-    category: "Inclusion",
-    date: "December 5, 2022",
-    readTime: "7 min read",
-    author: "Emily Chen",
-    featured: false,
-  },
-];
-
-// Categories for filtering
-const categories = ["All", "Entrepreneurship", "Investment", "Social Impact", "Technology", "Impact Measurement", "Inclusion"];
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
+interface BlogPost {
+  id: number;
+  title: string;
+  excerpt: string;
+  content: string;
+  image: string;
+  category: string;
+  date: string;
+  readTime: string;
+  author: string;
+  featured: boolean;
+}
 
 const Blog = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("All");
-  
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchBlogPosts = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('blog_posts')
+          .select('*')
+          .order('date', { ascending: false });
+
+        if (error) throw error;
+        setBlogPosts(data || []);
+      } catch (err) {
+        setError('Failed to load blog posts');
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchBlogPosts();
+  }, []);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
+  // Categories for filtering
+  const categories = ["All", ...new Set(blogPosts.map(post => post.category))];
+
   // Filter blog posts based on search query and category
   const filteredPosts = blogPosts.filter(post => {
     const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
