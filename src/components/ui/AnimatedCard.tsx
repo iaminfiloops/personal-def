@@ -8,6 +8,7 @@ export interface AnimatedCardProps {
   className?: string;
   hoverEffect?: "lift" | "glow" | "none";
   glareEffect?: boolean;
+  onClick?: (e: React.MouseEvent) => void;
   style?: React.CSSProperties;
 }
 
