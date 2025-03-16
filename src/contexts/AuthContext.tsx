@@ -53,18 +53,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       try {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', user.id)
-          .single();
-
-        if (error) {
-          console.error('Error fetching profile:', error);
-          return;
-        }
-
-        setProfile(data as UserProfile);
+        // For now, we'll create a temporary profile since we don't have a profiles table yet
+        // In production, you would fetch this from a profiles table
+        const tempProfile: UserProfile = {
+          id: user.id,
+          email: user.email || '',
+          name: user.email?.split('@')[0] || 'User',
+          role: 'admin' // For testing purposes, set all authenticated users as admins
+        };
+        setProfile(tempProfile);
+        
+        // Uncomment and modify when you have a profiles table
+        // const { data, error } = await supabase
+        //   .from('profiles')
+        //   .select('*')
+        //   .eq('id', user.id)
+        //   .single();
+        //
+        // if (error) {
+        //   console.error('Error fetching profile:', error);
+        //   return;
+        // }
+        //
+        // setProfile(data as UserProfile);
       } catch (error) {
         console.error('Error fetching profile:', error);
       }
