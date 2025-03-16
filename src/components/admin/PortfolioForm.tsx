@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,27 +13,30 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useQueryClient } from "@tanstack/react-query";
+import ImageUploader, { ImageFile } from "./ImageUploader";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 // Validation schema
 const portfolioSchema = z.object({
   name: z.string().min(1, "Name is required"),
   type: z.string().min(1, "Type is required"),
-  year: z.coerce.number().int().min(1900, "Year must be valid").max(new Date().getFullYear(), "Year cannot be in the future"),
+  year: z.number().min(1900, "Year must be at least 1900"),
   status: z.string().min(1, "Status is required"),
-  description: z.string().optional(),
-  logo_url: z.string().optional(),
+  description: z.string().min(10, "Description must be at least 10 characters"),
 });
 
 type PortfolioFormValues = z.infer<typeof portfolioSchema>;
 
-interface Company {
+interface PortfolioCompany {
   id?: string;
   name: string;
   type: string;
   year: number;
   status: string;
-  description?: string;
-  logo_url?: string;
+  description: string;
+  logo_url: string;
+  created_at?: string;
+  updated_at: string;
 }
 
 const PortfolioForm = () => {
@@ -45,6 +47,8 @@ const PortfolioForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const queryClient = useQueryClient();
+  const [logoImage, setLogoImage] = useState<ImageFile | null>(null);
+  const [galleryImages, setGalleryImages] = useState<ImageFile[]>([]);
 
   // Initialize the form
   const form = useForm<PortfolioFormValues>({
@@ -53,9 +57,8 @@ const PortfolioForm = () => {
       name: "",
       type: "",
       year: new Date().getFullYear(),
-      status: "In Development",
+      status: "Active",
       description: "",
-      logo_url: "",
     },
   });
 
@@ -90,10 +93,49 @@ const PortfolioForm = () => {
             name: data.name,
             type: data.type || "",
             year: data.year || new Date().getFullYear(),
-            status: data.status || "In Development",
+            status: data.status || "Active",
             description: data.description || "",
-            logo_url: data.logo_url || "",
           });
+
+          // Set logo image
+          if (data.logo_url) {
+            setLogoImage({
+              id: crypto.randomUUID(),
+              url: data.logo_url,
+              alt: data.name,
+              title: data.name,
+              isUploading: false
+            });
+          }
+
+          // Fetch gallery images from metadata if they exist
+          // Since we don't have a separate table for metadata yet, we'll just log this
+          console.log("Note: To store gallery images, you'll need to create a metadata table or add a JSONB column");
+          
+          // The following code is commented out since the portfolio_metadata table doesn't exist yet
+          /*
+          try {
+            // Example: Fetch gallery images from a separate metadata table or JSON field
+            const { data: metaData, error: metaError } = await supabase
+              .from("portfolio_metadata")
+              .select("gallery_images")
+              .eq("portfolio_id", id)
+              .single();
+              
+            if (!metaError && metaData && metaData.gallery_images) {
+              const galleryImgs: ImageFile[] = metaData.gallery_images.map((img: any) => ({
+                id: img.id || crypto.randomUUID(),
+                url: img.url,
+                alt: img.alt || "",
+                title: img.title || "",
+                isUploading: false
+              }));
+              setGalleryImages(galleryImgs);
+            }
+          } catch (metaError) {
+            console.log("No gallery images found or metadata table doesn't exist:", metaError);
+          }
+          */
         }
       } catch (error) {
         console.error("Error fetching company:", error);
@@ -110,11 +152,109 @@ const PortfolioForm = () => {
     try {
       console.log("Submitting form with values:", values);
 
+      // Handle logo upload
+      let logoUrl = "";
+      if (logoImage && logoImage.file) {
+        const fileExt = logoImage.file.name.split('.').pop();
+        const filePath = `logos/${crypto.randomUUID()}.${fileExt}`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from("portfolio")
+          .upload(filePath, logoImage.file);
+          
+        if (uploadError) throw uploadError;
+        
+        const { data: urlData } = supabase.storage
+          .from("portfolio")
+          .getPublicUrl(filePath);
+          
+        logoUrl = urlData.publicUrl;
+      } else if (logoImage) {
+        logoUrl = logoImage.url;
+      }
+
+      // Upload gallery images
+      const uploadedGalleryImages = [...galleryImages];
+      
+      // Process each gallery image that needs to be uploaded
+      for (let i = 0; i < uploadedGalleryImages.length; i++) {
+        const image = uploadedGalleryImages[i];
+        
+        if (image.isNew && image.file) {
+          // Update status to uploading
+          uploadedGalleryImages[i] = { ...uploadedGalleryImages[i], isUploading: true };
+          setGalleryImages([...uploadedGalleryImages]); // Update UI
+          
+          try {
+            // Create a unique file path
+            const fileExt = image.file.name.split('.').pop();
+            const filePath = `gallery/${crypto.randomUUID()}.${fileExt}`;
+            
+            // Upload to Supabase storage
+            const { error } = await supabase.storage
+              .from("portfolio")
+              .upload(filePath, image.file);
+            
+            if (error) throw error;
+            
+            // Get public URL
+            const { data: urlData } = supabase.storage
+              .from("portfolio")
+              .getPublicUrl(filePath);
+            
+            // Update image with new URL
+            uploadedGalleryImages[i] = {
+              ...uploadedGalleryImages[i],
+              url: urlData.publicUrl,
+              isUploading: false,
+              isNew: false
+            };
+          } catch (error) {
+            console.error("Error uploading image:", error);
+            // Mark as failed but keep in list
+            uploadedGalleryImages[i] = {
+              ...uploadedGalleryImages[i],
+              isUploading: false
+            };
+            
+            toast({
+              title: "Upload failed",
+              description: "Failed to upload image. Please try again.",
+              variant: "destructive",
+            });
+          }
+        }
+      }
+      
+      // Prepare gallery image data for storage
+      const galleryData = uploadedGalleryImages.map(img => ({
+        id: img.id,
+        url: img.url,
+        alt: img.alt,
+        title: img.title
+      }));
+
+      // Store image metadata separately
+      const imageMetadata = {
+        gallery_images: galleryData
+      };
+
+      // Prepare the submission data with only fields that exist in the database
+      const submissionData: PortfolioCompany = {
+        name: values.name,
+        type: values.type,
+        year: values.year,
+        status: values.status,
+        description: values.description,
+        logo_url: logoUrl,
+        updated_at: new Date().toISOString()
+      };
+
       if (isEditMode && id) {
         // Update existing company
         const { error } = await supabase
           .from("portfolio_companies")
-          .update(values)
+          .update(submissionData)
           .eq("id", id);
 
         if (error) {
@@ -122,19 +262,77 @@ const PortfolioForm = () => {
           throw error;
         }
 
+        // Store gallery images metadata in a separate table or as JSON
+        // This is a placeholder - implement based on your database structure
+        try {
+          // Example: Update metadata in a separate table
+          // Uncomment and adjust if you have a metadata table
+          /*
+          const { error: metaError } = await supabase
+            .from("portfolio_metadata")
+            .upsert({
+              portfolio_id: id,
+              gallery_images: galleryData
+            });
+            
+          if (metaError) {
+            console.error("Error updating gallery metadata:", metaError);
+          }
+          */
+          
+          // For now, we'll just log the gallery data
+          console.log("Gallery data that would be stored:", galleryData);
+        } catch (metaError) {
+          console.error("Error updating gallery metadata:", metaError);
+        }
+
         toast({
           title: "Success",
           description: "Company updated successfully",
         });
       } else {
-        // Create new company
-        const { error } = await supabase
+        // Create new company with created_at timestamp
+        const newCompany: PortfolioCompany = {
+          ...submissionData,
+          created_at: new Date().toISOString()
+        };
+        
+        // Insert the new company
+        const { data, error } = await supabase
           .from("portfolio_companies")
-          .insert([values]);
+          .insert([newCompany])
+          .select();
 
         if (error) {
           console.error("Error creating company:", error);
           throw error;
+        }
+
+        // Store gallery images metadata in a separate table or as JSON
+        // This is a placeholder - implement based on your database structure
+        if (data && data[0] && data[0].id) {
+          try {
+            // Example: Insert metadata in a separate table
+            // Uncomment and adjust if you have a metadata table
+            /*
+            const { error: metaError } = await supabase
+              .from("portfolio_metadata")
+              .insert({
+                portfolio_id: data[0].id,
+                gallery_images: galleryData
+              });
+              
+            if (metaError) {
+              console.error("Error creating gallery metadata:", metaError);
+            }
+            */
+            
+            // For now, we'll just log the gallery data
+            console.log("New company ID:", data[0].id);
+            console.log("Gallery data that would be stored:", galleryData);
+          } catch (metaError) {
+            console.error("Error creating gallery metadata:", metaError);
+          }
         }
 
         toast({
@@ -158,6 +356,18 @@ const PortfolioForm = () => {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleLogoChange = (newImages: ImageFile[]) => {
+    if (newImages.length > 0) {
+      setLogoImage(newImages[0]);
+    } else {
+      setLogoImage(null);
+    }
+  };
+
+  const handleGalleryChange = (newImages: ImageFile[]) => {
+    setGalleryImages(newImages);
   };
 
   if (isLoading) {
@@ -205,9 +415,22 @@ const PortfolioForm = () => {
                   name="type"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Relationship Type*</FormLabel>
+                      <FormLabel>Type*</FormLabel>
                       <FormControl>
-                        <Input placeholder="Founder, Advisor, Investor, etc." {...field} />
+                        <Select 
+                          onValueChange={field.onChange} 
+                          defaultValue={field.value}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select company type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Founder">Founder</SelectItem>
+                            <SelectItem value="Investor">Investor</SelectItem>
+                            <SelectItem value="Advisor">Advisor</SelectItem>
+                            <SelectItem value="Partner">Partner</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -219,9 +442,15 @@ const PortfolioForm = () => {
                   name="year"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Year*</FormLabel>
+                      <FormLabel>Founding Year*</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} />
+                        <Input 
+                          type="number" 
+                          placeholder="e.g. 2020" 
+                          min={1900} 
+                          max={new Date().getFullYear()} 
+                          {...field} 
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -229,31 +458,71 @@ const PortfolioForm = () => {
                 />
               </div>
 
-              <FormField
-                control={form.control}
-                name="status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Status*</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Active, In Development, etc." {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="status"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Status*</FormLabel>
+                      <FormControl>
+                        <Select 
+                          onValueChange={field.onChange} 
+                          defaultValue={field.value}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Active">Active</SelectItem>
+                            <SelectItem value="In Development">In Development</SelectItem>
+                            <SelectItem value="Acquired">Acquired</SelectItem>
+                            <SelectItem value="Closed">Closed</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Company Logo</Label>
+                <ImageUploader
+                  images={logoImage ? [logoImage] : []}
+                  onChange={handleLogoChange}
+                  bucketName="portfolio"
+                  folderPath="logos"
+                  maxImages={1}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Gallery Images</Label>
+                <p className="text-sm text-muted-foreground mb-2">
+                  Upload multiple images to showcase the company's products, services, or team.
+                </p>
+                <ImageUploader
+                  images={galleryImages}
+                  onChange={handleGalleryChange}
+                  bucketName="portfolio"
+                  folderPath="gallery"
+                  maxImages={20}
+                />
+              </div>
 
               <FormField
                 control={form.control}
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Description</FormLabel>
+                    <FormLabel>Description*</FormLabel>
                     <FormControl>
-                      <Textarea
-                        placeholder="Enter a description of the company..."
-                        className="resize-y min-h-[100px]"
-                        {...field}
+                      <Textarea 
+                        placeholder="Enter a description of the company" 
+                        className="min-h-[150px]"
+                        {...field} 
                       />
                     </FormControl>
                     <FormMessage />
@@ -261,21 +530,7 @@ const PortfolioForm = () => {
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name="logo_url"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Logo URL</FormLabel>
-                    <FormControl>
-                      <Input placeholder="https://example.com/logo.png" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className="flex justify-end gap-4">
+              <div className="flex justify-end space-x-4">
                 <Button
                   type="button"
                   variant="outline"
@@ -283,12 +538,15 @@ const PortfolioForm = () => {
                 >
                   Cancel
                 </Button>
-                <Button
-                  type="submit"
-                  className="bg-accent hover:bg-accent/90 text-white"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? "Saving..." : isEditMode ? "Update Company" : "Create Company"}
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? (
+                    <>
+                      <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
+                      {isEditMode ? "Updating..." : "Creating..."}
+                    </>
+                  ) : (
+                    <>{isEditMode ? "Update Company" : "Create Company"}</>
+                  )}
                 </Button>
               </div>
             </form>

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,6 +16,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { useAuth } from "@/contexts/AuthContext";
+import ImageUploader, { ImageFile } from "./ImageUploader";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 // Validation schema
 const blogPostSchema = z.object({
@@ -28,6 +29,18 @@ const blogPostSchema = z.object({
 
 type BlogFormValues = z.infer<typeof blogPostSchema>;
 
+interface BlogPost {
+  id?: string;
+  title: string;
+  category: string;
+  status: string;
+  content: string;
+  date: string;
+  author_id: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
 const BlogForm = () => {
   const { id } = useParams();
   const { user } = useAuth();
@@ -37,6 +50,8 @@ const BlogForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const queryClient = useQueryClient();
+  const [images, setImages] = useState<ImageFile[]>([]);
+  const [featuredImage, setFeaturedImage] = useState<string>("");
 
   // Initialize the form
   const form = useForm<BlogFormValues>({
@@ -82,6 +97,23 @@ const BlogForm = () => {
             status: data.status || "Draft",
             content: data.content || "",
           });
+
+          // Set featured image if it exists in metadata
+          if (data.image_url) {
+            setFeaturedImage(data.image_url);
+          }
+
+          // Fetch additional images if they exist in metadata
+          if (data.images && Array.isArray(data.images)) {
+            const blogImages: ImageFile[] = data.images.map((img: any) => ({
+              id: img.id || crypto.randomUUID(),
+              url: img.url,
+              alt: img.alt || "",
+              title: img.title || "",
+              isUploading: false
+            }));
+            setImages(blogImages);
+          }
         }
       } catch (error) {
         console.error("Error fetching blog post:", error);
@@ -98,17 +130,92 @@ const BlogForm = () => {
     try {
       console.log("Submitting form with values:", values);
 
-      const submissionData = {
-        ...values,
+      // Upload all images that need to be uploaded
+      const uploadedImages = [...images];
+      
+      // Find images that need to be uploaded (have file property)
+      for (let i = 0; i < uploadedImages.length; i++) {
+        const image = uploadedImages[i];
+        
+        if (image.isNew && image.file) {
+          // Update status to uploading
+          uploadedImages[i] = { ...uploadedImages[i], isUploading: true };
+          setImages([...uploadedImages]); // Update UI
+          
+          try {
+            // Create a unique file path
+            const fileExt = image.file.name.split('.').pop();
+            const filePath = `posts/${crypto.randomUUID()}.${fileExt}`;
+            
+            // Upload to Supabase storage
+            const { error } = await supabase.storage
+              .from("blog")
+              .upload(filePath, image.file);
+            
+            if (error) throw error;
+            
+            // Get public URL
+            const { data: urlData } = supabase.storage
+              .from("blog")
+              .getPublicUrl(filePath);
+            
+            // Update image with new URL
+            uploadedImages[i] = {
+              ...uploadedImages[i],
+              url: urlData.publicUrl,
+              isUploading: false,
+              isNew: false
+            };
+          } catch (error) {
+            console.error("Error uploading image:", error);
+            // Mark as failed but keep in list
+            uploadedImages[i] = {
+              ...uploadedImages[i],
+              isUploading: false
+            };
+            
+            toast({
+              title: "Upload failed",
+              description: "Failed to upload image. Please try again.",
+              variant: "destructive",
+            });
+          }
+        }
+      }
+      
+      // Prepare image data for storage
+      const imageData = uploadedImages.map(img => ({
+        id: img.id,
+        url: img.url,
+        alt: img.alt,
+        title: img.title
+      }));
+
+      // Get the featured image (first image or existing one)
+      const mainImage = featuredImage || (uploadedImages.length > 0 ? uploadedImages[0].url : "");
+
+      // Store image metadata separately
+      const imageMetadata = {
+        image_url: mainImage,
+        images: imageData
+      };
+
+      // Prepare the submission data with only fields that exist in the database
+      const submissionData: BlogPost = {
+        title: values.title,
+        category: values.category,
+        status: values.status,
+        content: values.content,
         date: new Date().toISOString(),
-        author_id: user?.id,
+        author_id: user?.id || "",
+        updated_at: new Date().toISOString()
       };
 
       if (isEditMode && id) {
         // Update existing blog post
         const { error } = await supabase
           .from("blog_posts")
-          .update(values)
+          .update(submissionData)
           .eq("id", id);
 
         if (error) {
@@ -116,6 +223,9 @@ const BlogForm = () => {
           throw error;
         }
 
+        // Update image metadata in a separate table or field if needed
+        // This would depend on your database structure
+        
         toast({
           title: "Success",
           description: "Blog post updated successfully",
@@ -124,7 +234,10 @@ const BlogForm = () => {
         // Create new blog post
         const { error } = await supabase
           .from("blog_posts")
-          .insert([submissionData]);
+          .insert([{
+            ...submissionData,
+            created_at: new Date().toISOString()
+          }]);
 
         if (error) {
           console.error("Error creating blog post:", error);
@@ -152,6 +265,19 @@ const BlogForm = () => {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleImageChange = (newImages: ImageFile[]) => {
+    setImages(newImages);
+    
+    // If there's no featured image set and we have images, set the first one as featured
+    if (!featuredImage && newImages.length > 0) {
+      setFeaturedImage(newImages[0].url);
+    }
+  };
+
+  const handleFeaturedImageChange = (imageUrl: string) => {
+    setFeaturedImage(imageUrl);
   };
 
   return (
@@ -202,7 +328,21 @@ const BlogForm = () => {
                           <FormItem>
                             <FormLabel>Category*</FormLabel>
                             <FormControl>
-                              <Input placeholder="e.g. Entrepreneurship, Investment" {...field} />
+                              <Select 
+                                onValueChange={field.onChange} 
+                                defaultValue={field.value}
+                              >
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select a category" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="Entrepreneurship">Entrepreneurship</SelectItem>
+                                  <SelectItem value="Social Impact">Social Impact</SelectItem>
+                                  <SelectItem value="Investment">Investment</SelectItem>
+                                  <SelectItem value="Technology">Technology</SelectItem>
+                                  <SelectItem value="Leadership">Leadership</SelectItem>
+                                </SelectContent>
+                              </Select>
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -216,13 +356,18 @@ const BlogForm = () => {
                           <FormItem>
                             <FormLabel>Status*</FormLabel>
                             <FormControl>
-                              <select
-                                className="w-full h-10 rounded-md border border-input bg-background px-3 py-2"
-                                {...field}
+                              <Select 
+                                onValueChange={field.onChange} 
+                                defaultValue={field.value}
                               >
-                                <option value="Draft">Draft</option>
-                                <option value="Published">Published</option>
-                              </select>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select status" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="Draft">Draft</SelectItem>
+                                  <SelectItem value="Published">Published</SelectItem>
+                                </SelectContent>
+                              </Select>
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -237,10 +382,10 @@ const BlogForm = () => {
                         <FormItem>
                           <FormLabel>Content*</FormLabel>
                           <FormControl>
-                            <Textarea
-                              placeholder="Enter blog post content..."
-                              className="resize-y min-h-[300px]"
-                              {...field}
+                            <Textarea 
+                              placeholder="Write your blog post content here..." 
+                              className="min-h-[300px]"
+                              {...field} 
                             />
                           </FormControl>
                           <FormMessage />
@@ -248,7 +393,48 @@ const BlogForm = () => {
                       )}
                     />
 
-                    <div className="flex justify-end gap-4">
+                    <div className="space-y-2">
+                      <Label>Images</Label>
+                      <ImageUploader
+                        images={images}
+                        onChange={handleImageChange}
+                        bucketName="blog"
+                        folderPath="posts"
+                        maxImages={10}
+                      />
+                    </div>
+
+                    {images.length > 0 && (
+                      <div className="space-y-2">
+                        <Label>Featured Image</Label>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                          {images.map((image) => (
+                            <div 
+                              key={image.id}
+                              className={`relative rounded-md overflow-hidden cursor-pointer border-2 ${
+                                featuredImage === image.url 
+                                  ? 'border-primary' 
+                                  : 'border-transparent'
+                              }`}
+                              onClick={() => handleFeaturedImageChange(image.url)}
+                            >
+                              <img 
+                                src={image.url} 
+                                alt={image.alt} 
+                                className="w-full h-24 object-cover"
+                              />
+                              {featuredImage === image.url && (
+                                <div className="absolute top-1 right-1 bg-primary text-white text-xs px-2 py-1 rounded-full">
+                                  Featured
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="flex justify-end space-x-4">
                       <Button
                         type="button"
                         variant="outline"
@@ -256,12 +442,19 @@ const BlogForm = () => {
                       >
                         Cancel
                       </Button>
-                      <Button
-                        type="submit"
-                        className="bg-accent hover:bg-accent/90 text-white"
+                      <Button 
+                        type="submit" 
                         disabled={isSubmitting}
+                        className="bg-accent hover:bg-accent/90 text-white"
                       >
-                        {isSubmitting ? "Saving..." : isEditMode ? "Update Post" : "Create Post"}
+                        {isSubmitting ? (
+                          <>
+                            <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
+                            {isEditMode ? "Updating..." : "Creating..."}
+                          </>
+                        ) : (
+                          isEditMode ? "Update Post" : "Create Post"
+                        )}
                       </Button>
                     </div>
                   </form>

@@ -19,6 +19,7 @@ interface Company {
   category: string;
   impact: string;
   website: string;
+  logo_url: string;
 }
 
 const Portfolio = () => {
@@ -70,7 +71,7 @@ const Portfolio = () => {
     e.preventDefault(); // Prevent default link behavior
     navigate(`/portfolio/${companyId}`);
   };
-
+console.log(filteredCompanies);
   return (
     <>
       <Header />
@@ -150,7 +151,8 @@ const Portfolio = () => {
                 >
                   <div className="h-48 overflow-hidden">
                     <img
-                      src={company.image}
+                      src={company.logo_url
+                      }
                       alt={company.name}
                       className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                     />

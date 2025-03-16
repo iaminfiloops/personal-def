@@ -1,4 +1,3 @@
-
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
@@ -10,6 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import DashboardStats from "@/components/admin/DashboardStats";
 import QuickActions from "@/components/admin/QuickActions";
 import RecentActivity from "@/components/admin/RecentActivity";
+import { supabase } from "@/lib/supabase";
 
 const AdminDashboard = () => {
   const { user, profile, signOut, isLoading } = useAuth();
@@ -19,14 +19,38 @@ const AdminDashboard = () => {
     companies: 0,
     messages: 0
   });
+  const [isLoadingStats, setIsLoadingStats] = useState(true);
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
+        setIsLoadingStats(true);
+        
+        // Get blog posts count
+        const { count: blogCount, error: blogError } = await supabase
+          .from('blog_posts')
+          .select('*', { count: 'exact', head: true });
+        
+        if (blogError) throw blogError;
+        
+        // Get companies count
+        const { count: companiesCount, error: companiesError } = await supabase
+          .from('portfolio_companies')
+          .select('*', { count: 'exact', head: true });
+        
+        if (companiesError) throw companiesError;
+        
+        // Get messages count
+        const { count: messagesCount, error: messagesError } = await supabase
+          .from('contact_messages')
+          .select('*', { count: 'exact', head: true });
+        
+        if (messagesError) throw messagesError;
+        
         setStats({
-          blogPosts: 3,
-          companies: 4,
-          messages: 5
+          blogPosts: blogCount || 0,
+          companies: companiesCount || 0,
+          messages: messagesCount || 0
         });
       } catch (error) {
         console.error("Error fetching stats:", error);
@@ -35,6 +59,8 @@ const AdminDashboard = () => {
           description: "Please try refreshing the page.",
           variant: "destructive",
         });
+      } finally {
+        setIsLoadingStats(false);
       }
     };
 
@@ -89,7 +115,8 @@ const AdminDashboard = () => {
           <DashboardStats 
             blogPosts={stats.blogPosts} 
             companies={stats.companies} 
-            messages={stats.messages} 
+            messages={stats.messages}
+            isLoading={isLoadingStats}
           />
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
