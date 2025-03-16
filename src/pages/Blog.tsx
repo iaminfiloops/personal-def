@@ -64,7 +64,7 @@ const Blog = () => {
 
   // Get featured posts
   const featuredPosts = blogPosts.filter(post => post.featured);
-
+console.log(blogPosts)
   return (
     <>
       <Header />
