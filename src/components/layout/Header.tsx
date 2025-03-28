@@ -67,7 +67,7 @@ const Header = () => {
         >
           <span className="relative">
             <span className="absolute -inset-1 -skew-y-3 bg-accent/10 rounded" />
-            <span className="relative">Emily Chen</span>
+            <span className="relative">Ajitesh Mondal</span>
           </span>
         </Link>
 

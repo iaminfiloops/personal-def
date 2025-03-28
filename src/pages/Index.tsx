@@ -43,8 +43,8 @@ const Index = () => {
               <div className="order-1 md:order-2 relative">
                 <div className="aspect-square rounded-2xl overflow-hidden shadow-glass">
                   <img 
-                    src="https://via.placeholder.com/800x800" 
-                    alt="Emily Chen" 
+                    src="https://res.cloudinary.com/dyiso4ohk/image/upload/v1743129881/WhatsApp_Image_2025-03-20_at_17.24.29_17889df1_ohnsxy.jpg" 
+                    alt="Ajitesh Mondal" 
                     className="w-full h-full object-cover"
                   />
                 </div>
