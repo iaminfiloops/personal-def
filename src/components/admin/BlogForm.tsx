@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Bold, Italic, List, ListOrdered, Heading1, Heading2, Quote, Code, Link as LinkIcon, Image as ImageIcon } from "lucide-react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,6 +18,9 @@ import Footer from "@/components/layout/Footer";
 import { useAuth } from "@/contexts/AuthContext";
 import ImageUploader, { ImageFile } from "./ImageUploader";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Toggle } from "@/components/ui/toggle";
+import { Separator } from "@/components/ui/separator";
 
 // Validation schema
 const blogPostSchema = z.object({
@@ -55,6 +58,8 @@ const BlogForm = () => {
   const [images, setImages] = useState<ImageFile[]>([]);
   const [featuredImage, setFeaturedImage] = useState<string>("");
   const [thumbnailImage, setThumbnailImage] = useState<ImageFile | null>(null);
+  const [previewMode, setPreviewMode] = useState<boolean>(false);
+  const [editorContent, setEditorContent] = useState<string>("");
 
   // Initialize the form
   const form = useForm<BlogFormValues>({
@@ -66,6 +71,16 @@ const BlogForm = () => {
       content: "",
     },
   });
+
+  // Watch content field for preview
+  useEffect(() => {
+    const subscription = form.watch((value) => {
+      if (value.content) {
+        setEditorContent(value.content);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form.watch]);
 
   // Fetch blog post data if in edit mode
   useEffect(() => {
@@ -100,6 +115,8 @@ const BlogForm = () => {
             status: data.status || "Draft",
             content: data.content || "",
           });
+          
+          setEditorContent(data.content || "");
 
           // Set thumbnail image if it exists
           if (data.image_url) {
@@ -108,7 +125,7 @@ const BlogForm = () => {
 
           // Fetch gallery images if they exist
           if (data.images && Array.isArray(data.images)) {
-            const blogImages: ImageFile[] = data.images.map((img: any) => ({
+            const blogImages: ImageFile[] = data.images.map((img:any) => ({
               id: img.id || crypto.randomUUID(),
               url: img.url,
               alt: img.alt || "",
@@ -283,6 +300,117 @@ const BlogForm = () => {
     setFeaturedImage(imageUrl);
   };
 
+  // Text formatting helper functions
+  const insertTextAtCursor = (textToInsert: string, surroundSelection: boolean = false) => {
+    const textArea = document.querySelector('textarea[name="content"]') as HTMLTextAreaElement;
+    
+    if (!textArea) return;
+    
+    const startPos = textArea.selectionStart;
+    const endPos = textArea.selectionEnd;
+    const selectedText = textArea.value.substring(startPos, endPos);
+    
+    let newText;
+    let newCursorPos;
+    
+    if (surroundSelection && selectedText) {
+      // Wrap the selected text
+      newText = textArea.value.substring(0, startPos) + textToInsert.replace('%s', selectedText) + textArea.value.substring(endPos);
+      newCursorPos = startPos + newText.length - textArea.value.length + endPos;
+    } else {
+      // Just insert text at cursor
+      newText = textArea.value.substring(0, startPos) + textToInsert + textArea.value.substring(endPos);
+      newCursorPos = startPos + textToInsert.length;
+    }
+    
+    // Update the form value
+    form.setValue('content', newText, { shouldValidate: true, shouldDirty: true });
+    
+    // Set focus back to textarea and set cursor position
+    setTimeout(() => {
+      textArea.focus();
+      textArea.setSelectionRange(newCursorPos, newCursorPos);
+    }, 0);
+  };
+
+  const formatBold = () => {
+    insertTextAtCursor('**%s**', true);
+  };
+
+  const formatItalic = () => {
+    insertTextAtCursor('*%s*', true);
+  };
+
+  const formatHeading1 = () => {
+    insertTextAtCursor('\n# %s\n', true);
+  };
+
+  const formatHeading2 = () => {
+    insertTextAtCursor('\n## %s\n', true);
+  };
+
+  const formatUnorderedList = () => {
+    insertTextAtCursor('\n- Item 1\n- Item 2\n- Item 3\n');
+  };
+
+  const formatOrderedList = () => {
+    insertTextAtCursor('\n1. Item 1\n2. Item 2\n3. Item 3\n');
+  };
+
+  const formatQuote = () => {
+    insertTextAtCursor('\n> %s\n', true);
+  };
+
+  const formatCode = () => {
+    insertTextAtCursor('\n```\n%s\n```\n', true);
+  };
+
+  const insertLink = () => {
+    insertTextAtCursor('[Link text](https://example.com)');
+  };
+
+  const insertImageMarkdown = () => {
+    insertTextAtCursor('![Alt text](https://example.com/image.jpg)');
+  };
+
+  // Convert markdown to HTML for preview
+  const markdownToHtml = (markdown: string) => {
+    // Simple converter for preview
+    let html = markdown
+      // Headers
+      .replace(/^# (.*$)/gm, '<h1>$1</h1>')
+      .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+      .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+      // Bold
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      // Italic
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      // Lists
+      .replace(/^\- (.*$)/gm, '<li>$1</li>')
+      .replace(/<\/li>\n<li>/g, '</li><li>')
+      .replace(/<li>(.+)<\/li>/g, '<ul><li>$1</li></ul>')
+      .replace(/<\/ul>\n<ul>/g, '')
+      // Ordered lists
+      .replace(/^\d+\. (.*$)/gm, '<li>$1</li>')
+      .replace(/<\/li>\n<li>/g, '</li><li>')
+      .replace(/<li>(.+)<\/li>/g, '<ol><li>$1</li></ol>')
+      .replace(/<\/ol>\n<ol>/g, '')
+      // Blockquotes
+      .replace(/^\> (.*$)/gm, '<blockquote>$1</blockquote>')
+      // Code blocks
+      .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
+      // Links
+      .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>')
+      // Images
+      .replace(/!\[(.*?)\]\((.*?)\)/g, '<img alt="$1" src="$2">')
+      // Paragraphs
+      .replace(/\n\n/g, '</p><p>')
+      // Line breaks
+      .replace(/\n/g, '<br>');
+    
+    return `<div class="prose prose-sm"><p>${html}</p></div>`;
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -384,13 +512,89 @@ const BlogForm = () => {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Content*</FormLabel>
-                          <FormControl>
-                            <Textarea 
-                              placeholder="Write your blog post content here..." 
-                              className="min-h-[300px]"
-                              {...field} 
-                            />
-                          </FormControl>
+                          <div>
+                            <Tabs defaultValue="write" className="w-full">
+                              <div className="flex justify-between items-center mb-2">
+                                <TabsList>
+                                  <TabsTrigger value="write">Write</TabsTrigger>
+                                  <TabsTrigger value="preview">Preview</TabsTrigger>
+                                </TabsList>
+                                
+                                <div className="flex items-center space-x-1 border rounded-md p-1">
+                                  <Toggle onClick={formatBold} aria-label="Bold">
+                                    <Bold size={16} />
+                                  </Toggle>
+                                  <Toggle onClick={formatItalic} aria-label="Italic">
+                                    <Italic size={16} />
+                                  </Toggle>
+                                  <Separator orientation="vertical" className="h-6" />
+                                  <Toggle onClick={formatHeading1} aria-label="Heading 1">
+                                    <Heading1 size={16} />
+                                  </Toggle>
+                                  <Toggle onClick={formatHeading2} aria-label="Heading 2">
+                                    <Heading2 size={16} />
+                                  </Toggle>
+                                  <Separator orientation="vertical" className="h-6" />
+                                  <Toggle onClick={formatUnorderedList} aria-label="Bullet List">
+                                    <List size={16} />
+                                  </Toggle>
+                                  <Toggle onClick={formatOrderedList} aria-label="Numbered List">
+                                    <ListOrdered size={16} />
+                                  </Toggle>
+                                  <Separator orientation="vertical" className="h-6" />
+                                  <Toggle onClick={formatQuote} aria-label="Quote">
+                                    <Quote size={16} />
+                                  </Toggle>
+                                  <Toggle onClick={formatCode} aria-label="Code">
+                                    <Code size={16} />
+                                  </Toggle>
+                                  <Toggle onClick={insertLink} aria-label="Link">
+                                    <LinkIcon size={16} />
+                                  </Toggle>
+                                  <Toggle onClick={insertImageMarkdown} aria-label="Image">
+                                    <ImageIcon size={16} />
+                                  </Toggle>
+                                </div>
+                              </div>
+                              
+                              <TabsContent value="write" className="mt-0">
+                                <FormControl>
+                                  <Textarea 
+                                    placeholder="Write your blog post content here..." 
+                                    className="min-h-[300px] font-mono text-sm"
+                                    {...field} 
+                                  />
+                                </FormControl>
+                              </TabsContent>
+                              
+                              <TabsContent value="preview" className="mt-0">
+                                <div 
+                                  className="min-h-[300px] border rounded-md p-4 overflow-auto"
+                                  dangerouslySetInnerHTML={{ __html: markdownToHtml(editorContent) }}
+                                />
+                              </TabsContent>
+                            </Tabs>
+                            
+                            <div className="mt-2">
+                              <p className="text-sm text-muted-foreground">
+                                Use Markdown for formatting. You can use the toolbar above or type directly.
+                              </p>
+                              <div className="mt-1 text-xs text-muted-foreground grid grid-cols-2 gap-2">
+                                <div>
+                                  <code># Heading 1</code> - Heading 1<br />
+                                  <code>## Heading 2</code> - Heading 2<br />
+                                  <code>**Bold**</code> - <strong>Bold</strong><br />
+                                  <code>*Italic*</code> - <em>Italic</em>
+                                </div>
+                                <div>
+                                  <code>- Item</code> - Bullet list<br />
+                                  <code>1. Item</code> - Numbered list<br />
+                                  <code>&#x3E; Quote</code> - Blockquote<br />
+                                  <code>```code```</code> - Code block
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                           <FormMessage />
                         </FormItem>
                       )}
