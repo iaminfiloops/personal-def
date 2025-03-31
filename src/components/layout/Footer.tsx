@@ -11,7 +11,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
           <div className="col-span-1 md:col-span-2">
             <Link to="/" className="text-xl font-medium text-foreground mb-4 block">
-              Emily Chen
+            Ajitesh Mondal
             </Link>
             <p className="text-muted-foreground max-w-md mb-6">
               Bridging the gap between social impact and entrepreneurship.
@@ -97,7 +97,7 @@ const Footer = () => {
         </div>
         
         <div className="pt-6 border-t border-border text-sm text-muted-foreground flex flex-col md:flex-row justify-between items-center">
-          <p>&copy; {currentYear} Emily Chen. All rights reserved.</p>
+          <p>&copy; {currentYear} InfiLoops system Inc. All rights reserved.</p>
           <p className="mt-2 md:mt-0">
             Designed with purpose. Built with passion.
           </p>

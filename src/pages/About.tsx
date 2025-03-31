@@ -84,7 +84,7 @@ const About = () => {
               </div>
               
               <div>
-                <h2 className="text-3xl font-semibold mb-6">Emily Chen</h2>
+                <h2 className="text-3xl font-semibold mb-6">Ajitesh Mondal</h2>
                 <p className="text-muted-foreground mb-4">
                   I'm a social worker turned entrepreneur with a passion for creating sustainable solutions to social challenges. With over 15 years of experience spanning both non-profit and for-profit sectors, I've developed a unique approach to social innovation.
                 </p>

@@ -63,7 +63,7 @@ const Header = () => {
         <Link
           to="/"
           className="text-xl font-medium text-foreground flex items-center gap-2"
-          aria-label="Emily Chen"
+          aria-label="Ajitesh Mondal"
         >
           <span className="relative">
             <span className="absolute -inset-1 -skew-y-3 bg-accent/10 rounded" />
