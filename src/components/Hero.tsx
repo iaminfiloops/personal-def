@@ -92,12 +92,12 @@ const Hero = () => {
             </div>
             <div className="bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl p-6 text-center shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-2">
               <Award className="mx-auto mb-4 text-accent" size={48} />
-              <p className="text-4xl font-bold text-accent mb-2">$25M+</p>
+              <p className="text-4xl font-bold text-accent mb-2">$10M+</p>
               <p className="text-gray-600 dark:text-gray-400">Impact Investment</p>
             </div>
             <div className="bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl p-6 text-center shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-2">
               <Users className="mx-auto mb-4 text-accent" size={48} />
-              <p className="text-4xl font-bold text-accent mb-2">500k+</p>
+              <p className="text-4xl font-bold text-accent mb-2">5k+</p>
               <p className="text-gray-600 dark:text-gray-400">Lives Transformed</p>
             </div>
           </div>
