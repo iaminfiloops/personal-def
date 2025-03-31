@@ -97,14 +97,14 @@ const Hero = () => {
               <div className="bg-accent/10 p-3 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                 <Award className="text-accent" size={32} />
               </div>
-              <p className="text-4xl font-bold text-accent mb-2">$25M+</p>
+              <p className="text-4xl font-bold text-accent mb-2">$2M+</p>
               <p className="text-muted-foreground">Impact Investment</p>
             </div>
             <div className="bg-gradient-to-br from-white/80 to-white/70 dark:from-gray-800/80 dark:to-gray-800/70 backdrop-blur-sm border border-primary/10 rounded-xl p-6 text-center shadow-soft hover-lift">
               <div className="bg-primary/10 p-3 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                 <Users className="text-primary" size={32} />
               </div>
-              <p className="text-4xl font-bold text-primary mb-2">500k+</p>
+              <p className="text-4xl font-bold text-primary mb-2">5k+</p>
               <p className="text-muted-foreground">Lives Transformed</p>
             </div>
           </div>
