@@ -101,6 +101,10 @@ export default {
 				'slide-down': {
 					from: { transform: 'translateY(-10px)', opacity: '0' },
 					to: { transform: 'translateY(0)', opacity: '1' }
+				},
+				'shimmer': {
+					from: { backgroundPosition: '-200% 0' },
+					to: { backgroundPosition: '200% 0' }
 				}
 			},
 			animation: {
@@ -109,14 +113,22 @@ export default {
 				'fade-in': 'fade-in 0.3s ease-out',
 				'fade-out': 'fade-out 0.3s ease-out',
 				'slide-up': 'slide-up 0.4s ease-out',
-				'slide-down': 'slide-down 0.4s ease-out'
+				'slide-down': 'slide-down 0.4s ease-out',
+				'shimmer': 'shimmer 2s linear infinite'
 			},
 			boxShadow: {
 				'soft': '0 4px 20px rgba(0, 0, 0, 0.08)',
-				'glass': '0 8px 32px rgba(0, 0, 0, 0.06)'
+				'glass': '0 8px 32px rgba(0, 0, 0, 0.06)',
+				'glow': '0 0 15px rgba(var(--accent)/0.5)',
+				'colorful': '0 8px 32px rgba(var(--primary)/0.2), 0 8px 32px rgba(var(--accent)/0.2)'
 			},
 			backdropBlur: {
 				'xs': '2px',
+			},
+			backgroundImage: {
+				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+				'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+				'gradient-shine': 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
 			},
 		}
 	},

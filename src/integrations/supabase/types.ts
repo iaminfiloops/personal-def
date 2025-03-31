@@ -17,6 +17,8 @@ export type Database = {
           created_at: string | null
           date: string | null
           id: string
+          image_url: string | null
+          images: Json | null
           status: string | null
           title: string
           updated_at: string | null
@@ -28,6 +30,8 @@ export type Database = {
           created_at?: string | null
           date?: string | null
           id?: string
+          image_url?: string | null
+          images?: Json | null
           status?: string | null
           title: string
           updated_at?: string | null
@@ -39,105 +43,19 @@ export type Database = {
           created_at?: string | null
           date?: string | null
           id?: string
+          image_url?: string | null
+          images?: Json | null
           status?: string | null
           title?: string
           updated_at?: string | null
         }
         Relationships: []
       }
-      leads: {
-        Row: {
-          address: string | null
-          assign_to: Json | null
-          businessInfo: string | null
-          company: string | null
-          contact_method: string | null
-          created_at: string
-          custom_data: Json | null
-          email: string | null
-          id: number
-          is_email_valid: boolean | null
-          is_phone_valid: boolean | null
-          lead_source_id: string | null
-          message: string | null
-          name: string | null
-          phone: string | null
-          position: string | null
-          revenue: number | null
-          source: string | null
-          status: Json | null
-          tag: string | null
-          tags: Json | null
-          text_area: Json | null
-          user_id: string | null
-          work_id: number | null
-        }
-        Insert: {
-          address?: string | null
-          assign_to?: Json | null
-          businessInfo?: string | null
-          company?: string | null
-          contact_method?: string | null
-          created_at?: string
-          custom_data?: Json | null
-          email?: string | null
-          id?: number
-          is_email_valid?: boolean | null
-          is_phone_valid?: boolean | null
-          lead_source_id?: string | null
-          message?: string | null
-          name?: string | null
-          phone?: string | null
-          position?: string | null
-          revenue?: number | null
-          source?: string | null
-          status?: Json | null
-          tag?: string | null
-          tags?: Json | null
-          text_area?: Json | null
-          user_id?: string | null
-          work_id?: number | null
-        }
-        Update: {
-          address?: string | null
-          assign_to?: Json | null
-          businessInfo?: string | null
-          company?: string | null
-          contact_method?: string | null
-          created_at?: string
-          custom_data?: Json | null
-          email?: string | null
-          id?: number
-          is_email_valid?: boolean | null
-          is_phone_valid?: boolean | null
-          lead_source_id?: string | null
-          message?: string | null
-          name?: string | null
-          phone?: string | null
-          position?: string | null
-          revenue?: number | null
-          source?: string | null
-          status?: Json | null
-          tag?: string | null
-          tags?: Json | null
-          text_area?: Json | null
-          user_id?: string | null
-          work_id?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "leads_work_id_fkey"
-            columns: ["work_id"]
-            isOneToOne: false
-            referencedRelation: "workspaces"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       portfolio_companies: {
         Row: {
           created_at: string | null
           description: string | null
+          gallery_images: Json | null
           id: string
           logo_url: string | null
           name: string
@@ -149,6 +67,7 @@ export type Database = {
         Insert: {
           created_at?: string | null
           description?: string | null
+          gallery_images?: Json | null
           id?: string
           logo_url?: string | null
           name: string
@@ -160,6 +79,7 @@ export type Database = {
         Update: {
           created_at?: string | null
           description?: string | null
+          gallery_images?: Json | null
           id?: string
           logo_url?: string | null
           name?: string
@@ -167,207 +87,6 @@ export type Database = {
           type?: string | null
           updated_at?: string | null
           year?: number | null
-        }
-        Relationships: []
-      }
-      status: {
-        Row: {
-          color: string | null
-          count_statistics: boolean | null
-          created_at: string
-          id: number
-          name: string | null
-          user_id: string | null
-          work_id: number | null
-          workspace_show: boolean | null
-        }
-        Insert: {
-          color?: string | null
-          count_statistics?: boolean | null
-          created_at?: string
-          id?: number
-          name?: string | null
-          user_id?: string | null
-          work_id?: number | null
-          workspace_show?: boolean | null
-        }
-        Update: {
-          color?: string | null
-          count_statistics?: boolean | null
-          created_at?: string
-          id?: number
-          name?: string | null
-          user_id?: string | null
-          work_id?: number | null
-          workspace_show?: boolean | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "status_work_id_fkey"
-            columns: ["work_id"]
-            isOneToOne: false
-            referencedRelation: "workspaces"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      webhooks: {
-        Row: {
-          counts: number | null
-          created_at: string
-          description: string | null
-          id: string
-          name: string | null
-          pocessingRate: string | null
-          qualificationRate: string | null
-          status: boolean | null
-          type: string | null
-          user_id: string | null
-          webhook_url: string | null
-          workspace_id: number | null
-        }
-        Insert: {
-          counts?: number | null
-          created_at?: string
-          description?: string | null
-          id?: string
-          name?: string | null
-          pocessingRate?: string | null
-          qualificationRate?: string | null
-          status?: boolean | null
-          type?: string | null
-          user_id?: string | null
-          webhook_url?: string | null
-          workspace_id?: number | null
-        }
-        Update: {
-          counts?: number | null
-          created_at?: string
-          description?: string | null
-          id?: string
-          name?: string | null
-          pocessingRate?: string | null
-          qualificationRate?: string | null
-          status?: boolean | null
-          type?: string | null
-          user_id?: string | null
-          webhook_url?: string | null
-          workspace_id?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "webhooks_workspace_id_fkey"
-            columns: ["workspace_id"]
-            isOneToOne: false
-            referencedRelation: "workspaces"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      workspace_members: {
-        Row: {
-          added_by: string | null
-          created_at: string
-          email: string | null
-          id: number
-          is_active: boolean | null
-          last_active: boolean | null
-          name: string | null
-          profile_image: Json | null
-          role: string | null
-          status: string | null
-          updated_at: string | null
-          user_id: string | null
-          workspace_id: number | null
-        }
-        Insert: {
-          added_by?: string | null
-          created_at?: string
-          email?: string | null
-          id?: number
-          is_active?: boolean | null
-          last_active?: boolean | null
-          name?: string | null
-          profile_image?: Json | null
-          role?: string | null
-          status?: string | null
-          updated_at?: string | null
-          user_id?: string | null
-          workspace_id?: number | null
-        }
-        Update: {
-          added_by?: string | null
-          created_at?: string
-          email?: string | null
-          id?: number
-          is_active?: boolean | null
-          last_active?: boolean | null
-          name?: string | null
-          profile_image?: Json | null
-          role?: string | null
-          status?: string | null
-          updated_at?: string | null
-          user_id?: string | null
-          workspace_id?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "workspace_members_workspace_id_fkey"
-            columns: ["workspace_id"]
-            isOneToOne: false
-            referencedRelation: "workspaces"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      workspaces: {
-        Row: {
-          company_size: string | null
-          company_type: string | null
-          created_at: string
-          id: number
-          industry: string | null
-          lead_status: Json | null
-          members: Json | null
-          name: string | null
-          notifications: Json | null
-          owner_id: string | null
-          profile_url: string | null
-          security: Json | null
-          status: boolean | null
-          timezone: string | null
-        }
-        Insert: {
-          company_size?: string | null
-          company_type?: string | null
-          created_at?: string
-          id?: number
-          industry?: string | null
-          lead_status?: Json | null
-          members?: Json | null
-          name?: string | null
-          notifications?: Json | null
-          owner_id?: string | null
-          profile_url?: string | null
-          security?: Json | null
-          status?: boolean | null
-          timezone?: string | null
-        }
-        Update: {
-          company_size?: string | null
-          company_type?: string | null
-          created_at?: string
-          id?: number
-          industry?: string | null
-          lead_status?: Json | null
-          members?: Json | null
-          name?: string | null
-          notifications?: Json | null
-          owner_id?: string | null
-          profile_url?: string | null
-          security?: Json | null
-          status?: boolean | null
-          timezone?: string | null
         }
         Relationships: []
       }
