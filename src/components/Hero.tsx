@@ -1,12 +1,13 @@
+
 import { ArrowRight, Award, Globe, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen flex items-center pt-16 overflow-hidden bg-white dark:bg-gray-900">
+    <section className="relative min-h-screen flex items-center pt-16 overflow-hidden bg-gradient-to-b from-primary/5 via-background to-accent/5">
       {/* Gradient Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-accent/5 to-background opacity-50 -z-10" />
+      <div className="absolute inset-0 bg-gradient-to-b from-accent/10 to-primary/5 opacity-50 -z-10" />
       
       {/* Subtle Background Pattern */}
       <div className="absolute inset-0 opacity-10 dark:opacity-20 -z-10">
@@ -17,7 +18,7 @@ const Hero = () => {
                 d="M 30 0 L 0 0 0 30" 
                 fill="none" 
                 stroke="currentColor" 
-                strokeOpacity="0.2" 
+                strokeOpacity="0.3" 
                 strokeWidth="0.5" 
               />
             </pattern>
@@ -33,14 +34,14 @@ const Hero = () => {
             className="mb-6 animate-fade-in opacity-0" 
             style={{ animationDelay: '0.1s', animationFillMode: 'forwards' }}
           >
-            <span className="inline-block px-4 py-2 rounded-full bg-accent/10 text-accent text-sm font-medium">
+            <span className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium">
               Social Innovator & Entrepreneur
             </span>
           </div>
           
           {/* Main Headline */}
           <h1 
-            className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 dark:text-white mb-6 animate-fade-in opacity-0" 
+            className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-gradient mb-6 animate-fade-in opacity-0" 
             style={{ animationDelay: '0.3s', animationFillMode: 'forwards' }}
           >
             Empowering Communities <br />Through Innovative Solutions
@@ -48,7 +49,7 @@ const Hero = () => {
           
           {/* Quote */}
           <blockquote 
-            className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-10 max-w-2xl mx-auto italic relative animate-fade-in opacity-0" 
+            className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto italic relative animate-fade-in opacity-0" 
             style={{ animationDelay: '0.5s', animationFillMode: 'forwards' }}
           >
             <span className="absolute -left-8 text-5xl text-accent/30 top-0">"</span>
@@ -64,7 +65,7 @@ const Hero = () => {
             <Button 
               asChild 
               size="lg" 
-              className="rounded-full px-8 bg-accent hover:bg-accent/90 text-white hover:scale-105 transition-transform"
+              className="rounded-full px-8 btn-gradient shadow-md hover:shadow-glow transition-all"
             >
               <Link to="/portfolio">View Impact</Link>
             </Button>
@@ -85,20 +86,26 @@ const Hero = () => {
             className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto animate-fade-in opacity-0" 
             style={{ animationDelay: '0.9s', animationFillMode: 'forwards' }}
           >
-            <div className="bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl p-6 text-center shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-2">
-              <Globe className="mx-auto mb-4 text-accent" size={48} />
-              <p className="text-4xl font-bold text-accent mb-2">10+</p>
-              <p className="text-gray-600 dark:text-gray-400">Social Ventures</p>
+            <div className="bg-gradient-to-br from-white/80 to-white/70 dark:from-gray-800/80 dark:to-gray-800/70 backdrop-blur-sm border border-primary/10 rounded-xl p-6 text-center shadow-soft hover-lift">
+              <div className="bg-primary/10 p-3 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <Globe className="text-primary" size={32} />
+              </div>
+              <p className="text-4xl font-bold text-primary mb-2">10+</p>
+              <p className="text-muted-foreground">Social Ventures</p>
             </div>
-            <div className="bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl p-6 text-center shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-2">
-              <Award className="mx-auto mb-4 text-accent" size={48} />
-              <p className="text-4xl font-bold text-accent mb-2">$10M+</p>
-              <p className="text-gray-600 dark:text-gray-400">Impact Investment</p>
+            <div className="bg-gradient-to-br from-white/80 to-white/70 dark:from-gray-800/80 dark:to-gray-800/70 backdrop-blur-sm border border-accent/10 rounded-xl p-6 text-center shadow-soft hover-lift">
+              <div className="bg-accent/10 p-3 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <Award className="text-accent" size={32} />
+              </div>
+              <p className="text-4xl font-bold text-accent mb-2">$25M+</p>
+              <p className="text-muted-foreground">Impact Investment</p>
             </div>
-            <div className="bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl p-6 text-center shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-2">
-              <Users className="mx-auto mb-4 text-accent" size={48} />
-              <p className="text-4xl font-bold text-accent mb-2">5k+</p>
-              <p className="text-gray-600 dark:text-gray-400">Lives Transformed</p>
+            <div className="bg-gradient-to-br from-white/80 to-white/70 dark:from-gray-800/80 dark:to-gray-800/70 backdrop-blur-sm border border-primary/10 rounded-xl p-6 text-center shadow-soft hover-lift">
+              <div className="bg-primary/10 p-3 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <Users className="text-primary" size={32} />
+              </div>
+              <p className="text-4xl font-bold text-primary mb-2">500k+</p>
+              <p className="text-muted-foreground">Lives Transformed</p>
             </div>
           </div>
         </div>
