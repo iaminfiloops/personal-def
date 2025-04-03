@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -22,6 +21,7 @@ import BlogPost from "./pages/BlogPost";
 import PortfolioDetail from "./pages/PortfolioDetail";
 import PortfolioForm from "./components/admin/PortfolioForm";
 import BlogForm from "./components/admin/BlogForm";
+import Gallery from "./pages/Gallery";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +40,7 @@ const App = () => (
             <Route path="/blog" element={<Blog />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/gallery" element={<Gallery />} />
             
             {/* Add routes for individual blog posts and portfolio items */}
             <Route path="/blog/:id" element={<BlogPost />} />

@@ -1,4 +1,3 @@
-
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, UserCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -17,6 +16,7 @@ const Header = () => {
     { name: "Home", path: "/" },
     { name: "About", path: "/about" },
     { name: "Portfolio", path: "/portfolio" },
+    { name: "Gallery", path: "/gallery" },
     { name: "Blog", path: "/blog" },
   ];
 
