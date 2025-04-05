@@ -23,6 +23,10 @@ import PortfolioForm from "./components/admin/PortfolioForm";
 import BlogForm from "./components/admin/BlogForm";
 import Gallery from "./pages/Gallery";
 
+// Import analytics components
+import GoogleAnalytics from "./components/analytics/GoogleAnalytics";
+import FacebookPixel from "./components/analytics/FacebookPixel";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -32,6 +36,10 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          {/* Add analytics tracking */}
+          <GoogleAnalytics />
+          <FacebookPixel />
+          
           <Routes>
             {/* Public routes */}
             <Route path="/" element={<Index />} />

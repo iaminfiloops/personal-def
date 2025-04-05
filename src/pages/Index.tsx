@@ -1,4 +1,3 @@
-
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Hero from "@/components/Hero";
@@ -7,10 +6,72 @@ import BlogPreview from "@/components/BlogPreview";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowRight, UserRound, Briefcase, FileText, Heart } from "lucide-react";
+import { Helmet } from "react-helmet";
+import { PersonStructuredData } from "@/components/SEO/StructuredData";
+import LocalBusinessSchema from "@/components/SEO/LocalBusinessSchema";
 
 const Index = () => {
   return (
     <>
+      <Helmet>
+        <title>Ajitesh Mondal - Social Entrepreneur and Education Innovator</title>
+        <meta 
+          name="description" 
+          content="Ajitesh Mondal: Social entrepreneur empowering backward class students through scholarships and mentoring programs across Kolkata, Bengaluru, and Jharkhand."
+        />
+        <meta name="keywords" content="Ajitesh Mondal, social entrepreneur, education activist, scholarship provider, backward class education, engineering mentor, medical education support" />
+        <link rel="canonical" href="https://www.ajiteshmondal.com" />
+      </Helmet>
+
+      {/* Structured Data for better SEO */}
+      <PersonStructuredData
+        name="Ajitesh Mondal"
+        alternateName="Ajitesh Mondal Social Entrepreneur"
+        jobTitle="Social Entrepreneur and Education Activist"
+        description="Ajitesh Mondal is a visionary social entrepreneur and education activist dedicated to empowering backward class students through scholarships and mentoring programs across Kolkata, Bengaluru, and Jharkhand."
+        image="https://www.ajiteshmondal.com/images/gallery/ajitesh-mondal-education-workshop-kolkata.jpg"
+        url="https://www.ajiteshmondal.com"
+        sameAs={[
+          "https://www.linkedin.com/in/ajiteshmondal",
+          "https://twitter.com/ajiteshmondal",
+          "https://www.facebook.com/ajiteshmondal",
+          "https://www.instagram.com/ajiteshmondal",
+          "https://www.youtube.com/c/ajiteshmondal"
+        ]}
+      />
+
+      <LocalBusinessSchema
+        name="Ajitesh Mondal Education Foundation"
+        description="Ajitesh Mondal's organization dedicated to empowering backward class students through scholarships and mentoring programs across India."
+        url="https://www.ajiteshmondal.com"
+        logo="https://www.ajiteshmondal.com/images/gallery/ajitesh-mondal-education-workshop-kolkata.jpg"
+        telephone="+91 9876543210"
+        email="contact@ajiteshmondal.com"
+        address={{
+          streetAddress: "123 Education Street, Park Avenue",
+          addressLocality: "Kolkata",
+          addressRegion: "West Bengal",
+          postalCode: "700001",
+          addressCountry: "IN"
+        }}
+        geo={{
+          latitude: 22.5726,
+          longitude: 88.3639
+        }}
+        sameAs={[
+          "https://www.linkedin.com/in/ajiteshmondal",
+          "https://twitter.com/ajiteshmondal",
+          "https://www.facebook.com/ajiteshmondal",
+          "https://www.instagram.com/ajiteshmondal",
+          "https://www.youtube.com/c/ajiteshmondal"
+        ]}
+        openingHours={[
+          "Monday-Friday 09:00-17:00",
+          "Saturday 10:00-15:00"
+        ]}
+        priceRange="Free-$$"
+      />
+      
       <Header />
       
       <main className="pt-16">
