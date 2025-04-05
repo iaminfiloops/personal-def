@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import OptimizedImage from "@/components/ui/optimized-image";
 
 // Define the gallery item interface
 interface GalleryItem {
@@ -225,12 +226,14 @@ const Gallery = () => {
                 <button 
                   onClick={() => setSelectedImage(item)}
                   className="w-full h-full"
+                  aria-label={`View larger image of ${item.title}`}
                 >
                   <AspectRatio ratio={4/3} className="bg-muted">
-                    <img
+                    <OptimizedImage
                       src={item.src}
                       alt={item.alt}
                       className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+                      sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                       loading="lazy"
                     />
                   </AspectRatio>
@@ -242,10 +245,11 @@ const Gallery = () => {
               <DialogContent className="sm:max-w-2xl">
                 <div className="flex flex-col space-y-4">
                   <AspectRatio ratio={16/9} className="bg-muted overflow-hidden rounded-lg">
-                    <img
-                      src={selectedImage?.src}
-                      alt={selectedImage?.alt}
+                    <OptimizedImage
+                      src={selectedImage?.src || ""}
+                      alt={selectedImage?.alt || ""}
                       className="object-contain w-full h-full"
+                      priority={true}
                     />
                   </AspectRatio>
                   <div className="space-y-2">

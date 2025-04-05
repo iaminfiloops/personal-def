@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://www.ajiteshmondal.com/</loc>
+    <lastmod>2025-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://www.ajiteshmondal.com/about</loc>
+    <lastmod>2025-04-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.ajiteshmondal.com/portfolio</loc>
+    <lastmod>2025-04-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.ajiteshmondal.com/blog</loc>
+    <lastmod>2025-04-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.ajiteshmondal.com/gallery</loc>
+    <lastmod>2025-04-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://www.ajiteshmondal.com/images/gallery/ajitesh-mondal-education-workshop-kolkata.jpg</image:loc>
+      <image:title>Ajitesh Mondal conducting education workshop in Kolkata</image:title>
+      <image:caption>Ajitesh Mondal leading an education workshop for underprivileged students in Kolkata</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.ajiteshmondal.com/images/gallery/ajitesh-mondal-scholarship-ceremony-bengaluru.jpg</image:loc>
+      <image:title>Ajitesh Mondal at scholarship award ceremony in Bengaluru</image:title>
+      <image:caption>Ajitesh Mondal presenting scholarships to deserving students in Bengaluru</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.ajiteshmondal.com/images/gallery/ajitesh-mondal-mentoring-engineering-students.jpg</image:loc>
+      <image:title>Ajitesh Mondal mentoring engineering students</image:title>
+      <image:caption>Ajitesh Mondal providing guidance to aspiring engineers from backward classes</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.ajiteshmondal.com/images/gallery/ajitesh-mondal-backward-class-education-jharkhand.jpg</image:loc>
+      <image:title>Ajitesh Mondal supporting backward class education in Jharkhand</image:title>
+      <image:caption>Ajitesh Mondal's initiative for backward class education in rural Jharkhand</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.ajiteshmondal.com/images/gallery/ajitesh-mondal-education-activist-calcutta.jpg</image:loc>
+      <image:title>Ajitesh Mondal as education activist in Calcutta</image:title>
+      <image:caption>Ajitesh Mondal advocating for educational reform in Calcutta</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.ajiteshmondal.com/contact</loc>
+    <lastmod>2025-04-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+</urlset>
