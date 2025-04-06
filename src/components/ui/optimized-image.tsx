@@ -28,31 +28,15 @@ const OptimizedImage = ({
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState(false);
 
-  // Generate responsive image paths
-  const generateSrcSet = () => {
-    if (!src) return "";
-    
-    // Extract file extension and base path
-    const lastDot = src.lastIndexOf('.');
-    const basePath = src.substring(0, lastDot);
-    const extension = src.substring(lastDot);
-    
-    // Generate srcset with multiple sizes
-    return `
-      ${basePath}-300w${extension} 300w,
-      ${basePath}-600w${extension} 600w,
-      ${basePath}-900w${extension} 900w,
-      ${src} 1200w
-    `;
+  // Simplify image handling to fix loading issues
+  const handleLoad = () => {
+    setIsLoaded(true);
   };
 
-  useEffect(() => {
-    // Preload image if priority is true
-    if (priority && src) {
-      const img = new Image();
-      img.src = src;
-    }
-  }, [priority, src]);
+  const handleError = () => {
+    console.error(`Failed to load image: ${src}`);
+    setError(true);
+  };
 
   return (
     <div className={cn("relative overflow-hidden", className)}>
@@ -63,10 +47,8 @@ const OptimizedImage = ({
         height={height}
         loading={priority ? "eager" : loading}
         sizes={sizes}
-        srcSet={generateSrcSet()}
-        onLoad={() => setIsLoaded(true)}
-        onError={() => setError(true)}
-        onClick={onClick}
+        onLoad={handleLoad}
+        onError={handleError}
         className={cn(
           "transition-opacity duration-300",
           isLoaded ? "opacity-100" : "opacity-0",
@@ -74,9 +56,11 @@ const OptimizedImage = ({
         )}
         {...props}
       />
+      
       {!isLoaded && !error && (
         <div className="absolute inset-0 bg-muted animate-pulse" />
       )}
+      
       {error && (
         <div className="absolute inset-0 flex items-center justify-center bg-muted">
           <span className="text-sm text-muted-foreground">Image not available</span>
