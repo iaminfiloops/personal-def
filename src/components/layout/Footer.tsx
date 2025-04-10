@@ -97,7 +97,7 @@ const Footer = () => {
         </div>
         
         <div className="pt-6 border-t border-border text-sm text-muted-foreground flex flex-col md:flex-row justify-between items-center">
-          <p>&copy; {currentYear} InfiLoops system Inc. All rights reserved.</p>
+          <p>&copy; {currentYear}  Infilabs. All rights reserved.</p>
           <p className="mt-2 md:mt-0">
             Designed with purpose. Built with passion.
           </p>
