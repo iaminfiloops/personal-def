@@ -5,11 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "prebuild": "node scripts/pre-build.js",
+    "build": "npm run prebuild && vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "optimize-images": "node scripts/optimize-images.js"
+    "optimize-images": "node scripts/optimize-images.js",
+    "optimize-blog-images": "node scripts/optimize-blog-images.js",
+    "generate-image-sitemap": "node scripts/generate-image-sitemap.js",
+    "seo": "npm run optimize-images && npm run optimize-blog-images && npm run generate-image-sitemap"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

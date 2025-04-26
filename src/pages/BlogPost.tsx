@@ -9,6 +9,9 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize from 'rehype-sanitize';
+import { Helmet } from 'react-helmet';
+import BlogPostSchema from "@/components/SEO/BlogPostSchema";
+import ImageObjectSchema from "@/components/SEO/ImageObjectSchema";
 
 /**
  * Interface for BlogPost data structure
@@ -35,7 +38,7 @@ interface BlogPost {
 const BlogPost = () => {
   // Get blog post ID from URL parameters
   const { id } = useParams();
-  
+
   // State management
   const [post, setPost] = useState<BlogPost | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -76,17 +79,83 @@ const BlogPost = () => {
 
   const handleFacebookShare = () => {
     const url = encodeURIComponent(window.location.href);
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+    window.open(`https://facebook.com/sharer/sharer.php?u=${url}`, '_blank');
   };
 
   const handleLinkedInShare = () => {
     const url = encodeURIComponent(window.location.href);
     const title = encodeURIComponent(post?.title || '');
-    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}&title=${title}`, '_blank');
+    window.open(`https://linkedin.com/sharing/share-offsite/?url=${url}&title=${title}`, '_blank');
+  };
+
+  // Generate SEO-friendly URL for canonical link
+  const getCanonicalUrl = () => {
+    if (!post) return '';
+
+    // Create a slug from the title
+    const slug = post.title
+      .toLowerCase()
+      .replace(/[^\w\s]/gi, '')
+      .replace(/\s+/g, '-');
+
+    return `https://ajiteshmondal.com/blog/${post.id}/${slug}`;
   };
 
   return (
     <>
+      {post && (
+        <>
+          <Helmet>
+            <title>{post.title} | Ajitesh Mondal</title>
+            <meta name="description" content={post.excerpt} />
+            <meta name="keywords" content={`Ajitesh Mondal, ${post.category.toLowerCase()}, ${post.title.toLowerCase()}`} />
+            <link rel="canonical" href={getCanonicalUrl()} />
+
+            {/* Open Graph tags */}
+            <meta property="og:title" content={post.title} />
+            <meta property="og:description" content={post.excerpt} />
+            <meta property="og:type" content="article" />
+            <meta property="og:url" content={getCanonicalUrl()} />
+            {post.image_url && <meta property="og:image" content={post.image_url} />}
+            <meta property="article:published_time" content={post.created_at} />
+            <meta property="article:modified_time" content={post.updated_at} />
+            <meta property="article:section" content={post.category} />
+
+            {/* Twitter Card tags */}
+            <meta name="twitter:card" content="summary_large_image" />
+            <meta name="twitter:title" content={post.title} />
+            <meta name="twitter:description" content={post.excerpt} />
+            {post.image_url && <meta name="twitter:image" content={post.image_url} />}
+          </Helmet>
+
+          {/* Structured Data for Blog Post */}
+          <BlogPostSchema
+            title={post.title}
+            description={post.excerpt}
+            url={getCanonicalUrl()}
+            imageUrl={post.image_url || 'https://ajiteshmondal.com/placeholder-blog.jpg'}
+            datePublished={post.created_at}
+            dateModified={post.updated_at}
+            authorName={post.author}
+            publisherName="Ajitesh Mondal"
+            publisherLogo="https://ajiteshmondal.com/favicon.png"
+            category={post.category}
+          />
+
+          {/* Structured Data for Featured Image */}
+          {post.image_url && (
+            <ImageObjectSchema
+              name={post.title}
+              contentUrl={post.image_url}
+              description={`Featured image for ${post.title}`}
+              caption={post.excerpt}
+              creator="Ajitesh Mondal"
+              copyrightNotice="© Ajitesh Mondal"
+            />
+          )}
+        </>
+      )}
+
       <Header />
 
       <main className="pt-24 pb-16">
@@ -128,21 +197,30 @@ const BlogPost = () => {
                 </div>
               </div>
 
-              {/* Featured Image - Contained to specific dimensions */}
+              {/* Featured Image - Optimized with proper attributes */}
               <div className="mb-10 flex justify-center">
                 <div className="max-w-3xl max-h-96 overflow-hidden rounded-xl">
                   <img
                     src={post.image_url}
                     alt={post.title}
+                    title={post.title}
                     className="w-full h-auto object-contain"
+                    loading="eager"
+                    width="1200"
+                    height="630"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = '/placeholder-blog.jpg';
+                      console.error("Failed to load image:", post.image_url);
+                    }}
                   />
                 </div>
               </div>
 
               {/* Post Content - Using React Markdown */}
               <div className="prose prose-lg max-w-none prose-headings:text-foreground prose-p:text-muted-foreground prose-a:text-accent hover:prose-a:text-accent/80">
-                <ReactMarkdown 
-                  remarkPlugins={[remarkGfm]} 
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
                   rehypePlugins={[rehypeRaw, rehypeSanitize]}
                 >
                   {post.content}

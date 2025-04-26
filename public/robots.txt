@@ -4,5 +4,6 @@ Allow: /
 # Allow all images to be indexed
 Allow: /images/
 
-# Sitemap
-Sitemap: https://www.ajiteshmondal.com/sitemap.xml
+# Sitemaps
+Sitemap: https://ajiteshmondal.com/sitemap.xml
+Sitemap: https://ajiteshmondal.com/image-sitemap.xml

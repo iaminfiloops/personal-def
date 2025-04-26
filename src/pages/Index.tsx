@@ -20,7 +20,7 @@ const Index = () => {
           content="Ajitesh Mondal: Social entrepreneur empowering backward class students through scholarships and mentoring programs across Kolkata, Bengaluru, and Jharkhand."
         />
         <meta name="keywords" content="Ajitesh Mondal, social entrepreneur, education activist, scholarship provider, backward class education, engineering mentor, medical education support" />
-        <link rel="canonical" href="https://www.ajiteshmondal.com" />
+        <link rel="canonical" href="https://ajiteshmondal.com" />
       </Helmet>
 
       {/* Structured Data for better SEO */}
@@ -29,22 +29,22 @@ const Index = () => {
         alternateName="Ajitesh Mondal Social Entrepreneur"
         jobTitle="Social Entrepreneur and Education Activist"
         description="Ajitesh Mondal is a visionary social entrepreneur and education activist dedicated to empowering backward class students through scholarships and mentoring programs across Kolkata, Bengaluru, and Jharkhand."
-        image="https://www.ajiteshmondal.com/images/gallery/ajitesh-mondal-education-workshop-kolkata.jpg"
-        url="https://www.ajiteshmondal.com"
+        image="https://ajiteshmondal.com/images/gallery/ajitesh-mondal-education-workshop-kolkata.jpg"
+        url="https://ajiteshmondal.com"
         sameAs={[
-          "https://www.linkedin.com/in/ajiteshmondal",
+          "https://linkedin.com/in/ajiteshmondal",
           "https://twitter.com/ajiteshmondal",
-          "https://www.facebook.com/ajiteshmondal",
-          "https://www.instagram.com/ajiteshmondal",
-          "https://www.youtube.com/c/ajiteshmondal"
+          "https://facebook.com/ajiteshmondal",
+          "https://instagram.com/ajiteshmondal",
+          "https://youtube.com/c/ajiteshmondal"
         ]}
       />
 
       <LocalBusinessSchema
         name="Ajitesh Mondal Education Foundation"
         description="Ajitesh Mondal's organization dedicated to empowering backward class students through scholarships and mentoring programs across India."
-        url="https://www.ajiteshmondal.com"
-        logo="https://www.ajiteshmondal.com/images/gallery/ajitesh-mondal-education-workshop-kolkata.jpg"
+        url="https://ajiteshmondal.com"
+        logo="https://ajiteshmondal.com/images/gallery/ajitesh-mondal-education-workshop-kolkata.jpg"
         telephone="+91 9876543210"
         email="contact@ajiteshmondal.com"
         address={{
@@ -59,11 +59,11 @@ const Index = () => {
           longitude: 88.3639
         }}
         sameAs={[
-          "https://www.linkedin.com/in/ajiteshmondal",
+          "https://linkedin.com/in/ajiteshmondal",
           "https://twitter.com/ajiteshmondal",
-          "https://www.facebook.com/ajiteshmondal",
-          "https://www.instagram.com/ajiteshmondal",
-          "https://www.youtube.com/c/ajiteshmondal"
+          "https://facebook.com/ajiteshmondal",
+          "https://instagram.com/ajiteshmondal",
+          "https://youtube.com/c/ajiteshmondal"
         ]}
         openingHours={[
           "Monday-Friday 09:00-17:00",
