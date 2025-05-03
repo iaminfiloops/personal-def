@@ -2,7 +2,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -10,63 +10,63 @@
 
     --card: 0 0% 100%;
     --card-foreground: 220 10% 10%;
- 
+
     --popover: 0 0% 100%;
     --popover-foreground: 220 10% 10%;
- 
-    --primary: 230 60% 50%;
+
+    --primary: 340 82% 52%;
     --primary-foreground: 0 0% 100%;
- 
-    --secondary: 200 75% 95%;
-    --secondary-foreground: 215 40% 30%;
- 
-    --muted: 215 10% 95%;
-    --muted-foreground: 215 10% 45%;
- 
-    --accent: 260 60% 55%;
+
+    --secondary: 340 30% 95%;
+    --secondary-foreground: 340 60% 30%;
+
+    --muted: 340 10% 95%;
+    --muted-foreground: 340 30% 45%;
+
+    --accent: 320 70% 45%;
     --accent-foreground: 0 0% 100%;
- 
+
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 10% 90%;
-    --input: 214 10% 90%;
-    --ring: 230 60% 50%;
- 
+    --border: 340 10% 90%;
+    --input: 340 10% 90%;
+    --ring: 340 82% 52%;
+
     --radius: 0.5rem;
   }
- 
+
   .dark {
     --background: 220 25% 9%;
     --foreground: 210 10% 95%;
- 
+
     --card: 220 25% 13%;
     --card-foreground: 210 10% 95%;
- 
+
     --popover: 220 25% 13%;
     --popover-foreground: 210 10% 95%;
- 
-    --primary: 230 60% 55%;
+
+    --primary: 340 70% 50%;
     --primary-foreground: 0 0% 100%;
- 
-    --secondary: 212 25% 21%;
+
+    --secondary: 340 30% 25%;
     --secondary-foreground: 210 10% 95%;
- 
-    --muted: 212 25% 21%;
-    --muted-foreground: 215 10% 65%;
- 
-    --accent: 260 60% 60%;
+
+    --muted: 340 20% 25%;
+    --muted-foreground: 340 15% 65%;
+
+    --accent: 320 60% 50%;
     --accent-foreground: 0 0% 95%;
- 
+
     --destructive: 0 62.8% 40.6%;
     --destructive-foreground: 0 0% 95%;
- 
-    --border: 215 25% 20%;
-    --input: 215 25% 20%;
-    --ring: 230 60% 55%;
+
+    --border: 340 25% 20%;
+    --input: 340 25% 20%;
+    --ring: 340 70% 50%;
   }
 }
- 
+
 @layer base {
   * {
     @apply border-border;
@@ -82,17 +82,17 @@
   .chip {
     @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
   }
-  
+
   /* Glass panel styling */
   .glass-panel {
     @apply bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-md rounded-xl border border-white/20 shadow-soft;
   }
-  
+
   /* Shadow styles */
   .shadow-soft {
     @apply shadow-[0_8px_30px_rgb(0,0,0,0.12)];
   }
-  
+
   .shadow-glass {
     @apply shadow-[0_8px_32px_rgba(0,0,0,0.15)];
   }
@@ -101,7 +101,7 @@
   .card-gradient {
     @apply bg-gradient-to-br from-primary/5 via-background to-accent/5;
   }
-  
+
   /* Button styles */
   .btn-gradient {
     @apply bg-gradient-to-r from-primary to-accent text-white hover:opacity-90 transition-opacity;
@@ -134,43 +134,178 @@
   50% { opacity: 0.7; }
 }
 
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-5px) rotate(1deg); }
+  50% { transform: translateY(0) rotate(0deg); }
+  75% { transform: translateY(5px) rotate(-1deg); }
+}
+
+@keyframes borderPulse {
+  0%, 100% { border-color: rgba(var(--primary), 0.3); }
+  50% { border-color: rgba(var(--accent), 0.3); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
 @layer utilities {
   .animate-fade-in {
     animation: fadeIn 0.5s ease-out forwards;
   }
-  
+
   .animate-slide-in-right {
     animation: slideInRight 0.5s ease-out forwards;
   }
-  
+
   .animate-slide-in-left {
     animation: slideInLeft 0.5s ease-out forwards;
   }
-  
+
   .animate-bounce-slow {
     animation: bounce 3s ease-in-out infinite;
   }
-  
+
   .animate-pulse {
     animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
-  
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-border-pulse {
+    animation: borderPulse 4s ease-in-out infinite;
+  }
+
+  .animate-shimmer {
+    background: linear-gradient(
+      90deg,
+      rgba(var(--primary), 0.1) 0%,
+      rgba(var(--accent), 0.2) 25%,
+      rgba(var(--primary), 0.1) 50%,
+      rgba(var(--accent), 0.2) 75%,
+      rgba(var(--primary), 0.1) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 6s linear infinite;
+  }
+
+  /* Modern entrepreneurial design elements */
+  .business-card-effect {
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+  }
+
+  .executive-border {
+    border-left: 4px solid rgba(var(--primary), 1);
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
+  }
+
   /* Gradient text */
   .text-gradient {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-accent to-primary/80;
   }
-  
+
   /* Border gradients */
   .border-gradient {
     border-image: linear-gradient(to right, theme('colors.primary.DEFAULT'), theme('colors.accent.DEFAULT')) 1;
+  }
+
+  /* Radial gradient for vignette effect */
+  .bg-radial-gradient {
+    background: radial-gradient(
+      circle at center,
+      transparent 60%,
+      rgba(0, 0, 0, 0.2) 100%
+    );
   }
 
   /* New hover effects */
   .hover-lift {
     @apply transition-transform duration-300 hover:-translate-y-1 hover:shadow-md;
   }
-  
+
   .hover-glow {
     @apply transition-shadow duration-300 hover:shadow-[0_0_15px_rgba(var(--accent)/0.5)];
+  }
+
+  /* Modern entrepreneurial image shapes */
+  .hero-image-container {
+    /* Curved wave shape - more organic and attractive */
+    clip-path: polygon(
+      0% 5%,
+      5% 0%,
+      95% 0%,
+      100% 5%,
+      100% 75%,
+      95% 80%,
+      90% 100%,
+      10% 100%,
+      5% 80%,
+      0% 75%
+    );
+    @apply overflow-hidden shadow-2xl;
+  }
+
+  /* Inner frame with slight offset */
+  .hero-image-inner {
+    /* Curved wave shape with slight variation */
+    clip-path: polygon(
+      0% 5%,
+      5% 0%,
+      95% 0%,
+      100% 5%,
+      100% 75%,
+      95% 80%,
+      90% 100%,
+      10% 100%,
+      5% 80%,
+      0% 75%
+    );
+    @apply overflow-hidden;
+  }
+
+  /* Outer decorative frame */
+  .hero-image-frame {
+    /* Curved wave shape with slight variation */
+    clip-path: polygon(
+      0% 5%,
+      5% 0%,
+      95% 0%,
+      100% 5%,
+      100% 75%,
+      95% 80%,
+      90% 100%,
+      10% 100%,
+      5% 80%,
+      0% 75%
+    );
+    @apply overflow-hidden;
+  }
+
+  /* Accent shape for corners */
+  .hero-image-accent {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%);
+    @apply overflow-hidden;
+  }
+
+  /* Vertical accent bar */
+  .hero-image-bar {
+    @apply overflow-hidden;
+  }
+
+  /* Flower-like shape for more attractive design */
+  .hero-image-flower {
+    clip-path: path('M50,0 C60,35 100,35 100,50 C100,65 60,65 50,100 C40,65 0,65 0,50 C0,35 40,35 50,0 Z');
+    @apply overflow-hidden;
+  }
+
+  /* Curved frame for more attractive design */
+  .hero-image-curved {
+    clip-path: path('M0,20 C0,10 10,0 20,0 L80,0 C90,0 100,10 100,20 L100,80 C100,90 90,100 80,100 L20,100 C10,100 0,90 0,80 Z');
+    @apply overflow-hidden;
   }
 }

@@ -68,7 +68,7 @@ async function generateImageSitemap() {
 
       // Add URL entry for this path
       xmlContent += `  <url>\n`;
-      xmlContent += `    <loc>https://ajiteshmondal.com${urlPath}</loc>\n`;
+      xmlContent += `    <loc>https://pinkypaulmondal.com${urlPath}</loc>\n`;
 
       // Add each image to the sitemap
       for (const imagePath of imageFiles) {
@@ -83,7 +83,7 @@ async function generateImageSitemap() {
           .join(' ');
 
         xmlContent += `    <image:image>\n`;
-        xmlContent += `      <image:loc>https://ajiteshmondal.com/images${urlPath === '/' ? '' : urlPath}/${filename}</image:loc>\n`;
+        xmlContent += `      <image:loc>https://pinkypaulmondal.com/images${urlPath === '/' ? '' : urlPath}/${filename}</image:loc>\n`;
         xmlContent += `      <image:title>${escapeXml(readableTitle)}</image:title>\n`;
         xmlContent += `      <image:caption>${escapeXml(readableTitle)}</image:caption>\n`;
         xmlContent += `    </image:image>\n`;
@@ -94,21 +94,21 @@ async function generateImageSitemap() {
 
     // Add static gallery page
     xmlContent += `  <url>
-    <loc>https://ajiteshmondal.com/gallery</loc>
+    <loc>https://pinkypaulmondal.com/gallery</loc>
     <image:image>
-      <image:loc>https://ajiteshmondal.com/images/gallery/ajitesh-mondal-education-workshop-kolkata.jpg</image:loc>
-      <image:title>Ajitesh Mondal conducting education workshop in Kolkata</image:title>
-      <image:caption>Ajitesh Mondal leading an educational workshop for underprivileged students in Kolkata</image:caption>
+      <image:loc>https://pinkypaulmondal.com/images/gallery/pinky-paul-mondal-education-workshop-kolkata.jpg</image:loc>
+      <image:title>Pinky Paul Mondal conducting education workshop in Kolkata</image:title>
+      <image:caption>Pinky Paul Mondal leading an educational workshop for underprivileged students in Kolkata</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://ajiteshmondal.com/images/gallery/ajitesh-mondal-scholarship-ceremony-bengaluru.jpg</image:loc>
-      <image:title>Ajitesh Mondal at scholarship award ceremony in Bengaluru</image:title>
-      <image:caption>Scholarship distribution ceremony organized by Ajitesh Mondal for backward class students in Bengaluru</image:caption>
+      <image:loc>https://pinkypaulmondal.com/images/gallery/pinky-paul-mondal-scholarship-ceremony-bengaluru.jpg</image:loc>
+      <image:title>Pinky Paul Mondal at scholarship award ceremony in Bengaluru</image:title>
+      <image:caption>Scholarship distribution ceremony organized by Pinky Paul Mondal for backward class students in Bengaluru</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://ajiteshmondal.com/images/gallery/ajitesh-mondal-mentoring-engineering-students.jpg</image:loc>
-      <image:title>Ajitesh Mondal mentoring engineering students</image:title>
-      <image:caption>Ajitesh Mondal providing mentorship to aspiring engineering students from underprivileged backgrounds</image:caption>
+      <image:loc>https://pinkypaulmondal.com/images/gallery/pinky-paul-mondal-mentoring-engineering-students.jpg</image:loc>
+      <image:title>Pinky Paul Mondal mentoring engineering students</image:title>
+      <image:caption>Pinky Paul Mondal providing mentorship to aspiring engineering students from underprivileged backgrounds</image:caption>
     </image:image>
   </url>
 `;

@@ -1,4 +1,4 @@
-# SEO Guidelines for ajiteshmondal.com
+# SEO Guidelines for pinkypaulmondal.com
 
 This document outlines the SEO best practices implemented on the website and provides guidelines for maintaining and improving SEO performance.
 
@@ -133,14 +133,14 @@ Every page should include:
   <title>Page Title | Ajitesh Mondal</title>
   <meta name="description" content="Page description here" />
   <link rel="canonical" href="https://www.ajiteshmondal.com/page-url" />
-  
+
   {/* Open Graph tags */}
   <meta property="og:title" content="Page Title" />
   <meta property="og:description" content="Page description here" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://www.ajiteshmondal.com/page-url" />
   <meta property="og:image" content="https://www.ajiteshmondal.com/image.jpg" />
-  
+
   {/* Twitter Card tags */}
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Page Title" />

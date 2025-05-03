@@ -11,7 +11,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
           <div className="col-span-1 md:col-span-2">
             <Link to="/" className="text-xl font-medium text-foreground mb-4 block">
-            Ajitesh Mondal
+            Pinky Paul Mondal
             </Link>
             <p className="text-muted-foreground max-w-md mb-6">
               Bridging the gap between social impact and entrepreneurship.
@@ -47,7 +47,7 @@ const Footer = () => {
               </a>
             </div>
           </div>
-          
+
           <div className="col-span-1">
             <h3 className="text-base font-medium mb-4">Quick Links</h3>
             <ul className="space-y-3">
@@ -73,7 +73,7 @@ const Footer = () => {
               </li>
             </ul>
           </div>
-          
+
           <div className="col-span-1">
             <h3 className="text-base font-medium mb-4">Legal</h3>
             <ul className="space-y-3">
@@ -95,7 +95,7 @@ const Footer = () => {
             </ul>
           </div>
         </div>
-        
+
         <div className="pt-6 border-t border-border text-sm text-muted-foreground flex flex-col md:flex-row justify-between items-center">
           <p>&copy; {currentYear}  Infilabs. All rights reserved.</p>
           <p className="mt-2 md:mt-0">

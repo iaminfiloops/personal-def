@@ -1,6 +1,6 @@
 {
-  "name": "Ajitesh Mondal",
-  "short_name": "Ajitesh",
+  "name": "Pinky Paul Mondal",
+  "short_name": "Pinky",
   "icons": [
     {
       "src": "/favicon.png",
@@ -13,7 +13,7 @@
       "type": "image/png"
     }
   ],
-  "theme_color": "#ffffff",
-  "background_color": "#ffffff",
+  "theme_color": "#d81b60",
+  "background_color": "#d81b60",
   "display": "standalone"
 }

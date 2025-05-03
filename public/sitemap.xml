@@ -2,57 +2,57 @@
 <urlset xmlns="http://sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://google.com/schemas/sitemap-image/1.1">
   <url>
-    <loc>https://ajiteshmondal.com/</loc>
+    <loc>https://pinkypaulmondal.com/</loc>
     <lastmod>2025-04-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://ajiteshmondal.com/about</loc>
+    <loc>https://pinkypaulmondal.com/about</loc>
     <lastmod>2025-04-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://ajiteshmondal.com/portfolio</loc>
+    <loc>https://pinkypaulmondal.com/portfolio</loc>
     <lastmod>2025-04-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://ajiteshmondal.com/blog</loc>
+    <loc>https://pinkypaulmondal.com/blog</loc>
     <lastmod>2025-04-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://ajiteshmondal.com/gallery</loc>
+    <loc>https://pinkypaulmondal.com/gallery</loc>
     <lastmod>2025-04-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <image:image>
-      <image:loc>https://ajiteshmondal.com/images/gallery/ajitesh-mondal-education-workshop-kolkata.jpg</image:loc>
-      <image:title>Ajitesh Mondal conducting education workshop in Kolkata</image:title>
+      <image:loc>https://pinkypaulmondal.com/images/gallery/pinky-paul-mondal-education-workshop-kolkata.jpg</image:loc>
+      <image:title>Pinky Paul Mondal conducting education workshop in Kolkata</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://ajiteshmondal.com/images/gallery/ajitesh-mondal-scholarship-ceremony-bengaluru.jpg</image:loc>
-      <image:title>Ajitesh Mondal at scholarship award ceremony in Bengaluru</image:title>
+      <image:loc>https://pinkypaulmondal.com/images/gallery/pinky-paul-mondal-scholarship-ceremony-bengaluru.jpg</image:loc>
+      <image:title>Pinky Paul Mondal at scholarship award ceremony in Bengaluru</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://ajiteshmondal.com/images/gallery/ajitesh-mondal-mentoring-engineering-students.jpg</image:loc>
-      <image:title>Ajitesh Mondal mentoring engineering students</image:title>
+      <image:loc>https://pinkypaulmondal.com/images/gallery/pinky-paul-mondal-mentoring-engineering-students.jpg</image:loc>
+      <image:title>Pinky Paul Mondal mentoring engineering students</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://ajiteshmondal.com/images/gallery/ajitesh-mondal-backward-class-education-jharkhand.jpg</image:loc>
-      <image:title>Ajitesh Mondal supporting backward class education in Jharkhand</image:title>
+      <image:loc>https://pinkypaulmondal.com/images/gallery/pinky-paul-mondal-backward-class-education-jharkhand.jpg</image:loc>
+      <image:title>Pinky Paul Mondal supporting backward class education in Jharkhand</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://ajiteshmondal.com/images/gallery/ajitesh-mondal-education-activist-calcutta.jpg</image:loc>
-      <image:title>Ajitesh Mondal as education activist in Calcutta</image:title>
+      <image:loc>https://pinkypaulmondal.com/images/gallery/pinky-paul-mondal-education-activist-calcutta.jpg</image:loc>
+      <image:title>Pinky Paul Mondal as education activist in Calcutta</image:title>
     </image:image>
   </url>
   <url>
-    <loc>https://ajiteshmondal.com/contact</loc>
+    <loc>https://pinkypaulmondal.com/contact</loc>
     <lastmod>2025-04-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

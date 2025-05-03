@@ -49,12 +49,12 @@ const About = () => {
   return (
     <>
       <Header />
-      
+
       <main className="pt-16">
         {/* Hero Section */}
         <section className="pt-24 pb-16 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-b from-accent/5 to-background -z-10" />
-          
+
           <div className="container mx-auto px-6">
             <div className="text-center max-w-3xl mx-auto">
               <span className="chip bg-secondary text-foreground mb-3">About Me</span>
@@ -65,26 +65,26 @@ const About = () => {
             </div>
           </div>
         </section>
-        
+
         {/* Profile Section */}
         <section className="py-16">
           <div className="container mx-auto px-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
               <div className="relative">
                 <div className="aspect-[3/4] rounded-2xl overflow-hidden shadow-glass">
-                  <img 
-                    src="https://res.cloudinary.com/dyiso4ohk/image/upload/v1743129881/WhatsApp_Image_2025-03-20_at_17.24.29_17889df1_ohnsxy.jpg" 
-                    alt="Ajitesh Mondal" 
+                  <img
+                    src="https://res.cloudinary.com/dyiso4ohk/image/upload/v1743129881/WhatsApp_Image_2025-03-20_at_17.24.29_17889df1_ohnsxy.jpg"
+                    alt="Pinky Paul Mondal"
                     className="w-full h-full object-cover"
                   />
                 </div>
-                
+
                 {/* Floating accent elements */}
                 <div className="absolute -bottom-8 -right-8 w-40 h-40 bg-accent/10 rounded-full blur-3xl"></div>
               </div>
-              
+
               <div>
-                <h2 className="text-3xl font-semibold mb-6">Ajitesh Mondal</h2>
+                <h2 className="text-3xl font-semibold mb-6">Pinky Paul Mondal</h2>
                 <p className="text-muted-foreground mb-4">
                   I'm a social worker turned entrepreneur with a passion for creating sustainable solutions to social challenges. With over 15 years of experience spanning both non-profit and for-profit sectors, I've developed a unique approach to social innovation.
                 </p>
@@ -94,7 +94,7 @@ const About = () => {
                 <p className="text-muted-foreground mb-8">
                   Today, I build and invest in social enterprises that address critical needs while generating the resources required for long-term impact. I believe that the most effective social change happens at the intersection of purpose and profit.
                 </p>
-                
+
                 <div className="grid grid-cols-2 gap-6 mb-8">
                   <div>
                     <h3 className="text-xl font-medium mb-2">Expertise</h3>
@@ -114,7 +114,7 @@ const About = () => {
                     </ul>
                   </div>
                 </div>
-                
+
                 <Button asChild className="rounded-full bg-accent hover:bg-accent/90 text-white">
                   <Link to="/contact" className="flex items-center">
                     Connect with Me <ArrowRight size={16} className="ml-2" />
@@ -124,7 +124,7 @@ const About = () => {
             </div>
           </div>
         </section>
-        
+
         {/* Timeline Section */}
         <section className="py-16 bg-secondary/30">
           <div className="container mx-auto px-6">
@@ -135,15 +135,15 @@ const About = () => {
                 Key milestones in my career from social worker to social entrepreneur.
               </p>
             </div>
-            
+
             <div className="max-w-4xl mx-auto relative">
               {/* Timeline line */}
               <div className="absolute left-0 md:left-1/2 transform md:-translate-x-1/2 top-0 bottom-0 w-[2px] bg-border"></div>
-              
+
               {/* Timeline items */}
               <div className="space-y-12">
                 {timeline.map((item, index) => (
-                  <div 
+                  <div
                     key={index}
                     className={`relative flex flex-col md:flex-row ${
                       index % 2 === 0 ? 'md:flex-row-reverse' : ''
@@ -153,7 +153,7 @@ const About = () => {
                     <div className="absolute left-0 md:left-1/2 transform -translate-x-1/2 w-10 h-10 rounded-full bg-accent/10 border-4 border-background flex items-center justify-center z-10">
                       <item.icon size={16} className="text-accent" />
                     </div>
-                    
+
                     {/* Content */}
                     <div className={`md:w-1/2 ${
                       index % 2 === 0 ? 'md:pr-12 md:text-right' : 'md:pl-12'
@@ -170,7 +170,7 @@ const About = () => {
             </div>
           </div>
         </section>
-        
+
         {/* Values Section */}
         <section className="py-16">
           <div className="container mx-auto px-6">
@@ -181,7 +181,7 @@ const About = () => {
                 The core beliefs that shape my approach to social entrepreneurship.
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="glass-panel p-8">
                 <h3 className="text-xl font-medium mb-4">Sustainable Impact</h3>
@@ -189,14 +189,14 @@ const About = () => {
                   I believe in creating solutions that can sustain themselves over time, reducing dependency on donations or grants. True impact should be both profound and lasting.
                 </p>
               </div>
-              
+
               <div className="glass-panel p-8">
                 <h3 className="text-xl font-medium mb-4">Community-Centered Design</h3>
                 <p className="text-muted-foreground">
                   The most effective solutions emerge when we design with, not just for, the communities we aim to serve. Inclusive co-creation leads to better outcomes.
                 </p>
               </div>
-              
+
               <div className="glass-panel p-8">
                 <h3 className="text-xl font-medium mb-4">Bridging Divides</h3>
                 <p className="text-muted-foreground">
@@ -206,7 +206,7 @@ const About = () => {
             </div>
           </div>
         </section>
-        
+
         {/* CTA Section */}
         <section className="py-16 bg-gradient-to-b from-white to-secondary/20">
           <div className="container mx-auto px-6">
@@ -229,7 +229,7 @@ const About = () => {
           </div>
         </section>
       </main>
-      
+
       <Footer />
     </>
   );
