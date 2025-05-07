@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 
 const Hero = () => {
   const [isLoaded, setIsLoaded] = useState(false);
-  
+
   useEffect(() => {
     setIsLoaded(true);
   }, []);
@@ -85,7 +85,7 @@ const Hero = () => {
               className={`text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 transform transition-all duration-700 bg-clip-text text-transparent bg-gradient-to-r from-primary via-accent to-primary ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
               style={{ transitionDelay: '0.3s' }}
             >
-              Empowering Communities Through Innovative Solutions
+              Leading with Purpose: A Woman’s Journey to Transform Lives and Uplift Communities
             </h1>
 
             {/* Quote with enhanced styling */}
@@ -94,8 +94,7 @@ const Hero = () => {
               style={{ transitionDelay: '0.5s' }}
             >
               <span className="absolute -left-3 -top-6 text-5xl text-accent/40">"</span>
-              Education is not just about knowledge transfer; it's about breaking barriers, creating opportunities, and empowering those who have been left behind.
-              <span className="absolute -right-3 -bottom-6 text-5xl text-accent/40">"</span>
+              She transforms not by command, but by compassion — igniting hope, nurturing potential, and reshaping futures where others saw none.              <span className="absolute -right-3 -bottom-6 text-5xl text-accent/40">"</span>
             </blockquote>
 
             {/* Action Buttons with improved hover effects */}
@@ -129,7 +128,7 @@ const Hero = () => {
             <div className="relative mx-auto max-w-md">
               {/* Background Glow Effects */}
               <div className="absolute -inset-4 bg-gradient-to-tr from-primary/20 via-transparent to-accent/20 blur-xl opacity-70 rounded-2xl"></div>
-              
+
               {/* Main Image Frame with Better Border Design */}
               <div className="relative rounded-2xl p-1 bg-gradient-to-br from-primary via-accent to-primary shadow-xl overflow-hidden">
                 {/* Inner Container with Proper Padding & Border */}
@@ -137,7 +136,7 @@ const Hero = () => {
                   {/* Corner Accents */}
                   <div className="absolute top-0 right-0 w-12 h-12 bg-gradient-to-br from-primary/30 to-accent/30 rounded-bl-3xl"></div>
                   <div className="absolute bottom-0 left-0 w-12 h-12 bg-gradient-to-tr from-primary/30 to-accent/30 rounded-tr-3xl"></div>
-                  
+
                   {/* Image Container with Proper Aspect Ratio */}
                   <div className="relative rounded-lg overflow-hidden">
                     {/* Diagonal Decorative Lines */}
@@ -145,7 +144,7 @@ const Hero = () => {
                     <div className="absolute top-0 right-0 h-1/3 w-1 bg-gradient-to-b from-accent to-transparent"></div>
                     <div className="absolute bottom-0 right-0 w-1/3 h-1 bg-gradient-to-l from-primary to-transparent"></div>
                     <div className="absolute bottom-0 left-0 h-1/3 w-1 bg-gradient-to-t from-accent to-transparent"></div>
-                    
+
                     {/* Main Image with Proper Aspect Ratio and Responsive Height */}
                     <div className="relative pt-[125%] w-full">
                       <img
@@ -153,12 +152,12 @@ const Hero = () => {
                         alt="Pinky Paul Mondal - Social Entrepreneur"
                         className="absolute inset-0 w-full h-full object-cover"
                       />
-                      
+
                       {/* Gradient Overlay for Better Visual Integration */}
                       <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 via-transparent to-accent/10 mix-blend-overlay"></div>
                     </div>
                   </div>
-                  
+
                   {/* Name Banner at Bottom */}
                   <div className="absolute bottom-6 left-6 right-6 py-2 px-4 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-lg shadow-md">
                     <p className="text-center font-medium text-sm text-gradient">Pinky Paul Mondal</p>
@@ -166,11 +165,11 @@ const Hero = () => {
                   </div>
                 </div>
               </div>
-              
+
               {/* Decorative Elements */}
               <div className="absolute -right-4 top-1/4 w-8 h-8 border-2 border-accent/40 rounded-full animate-ping-slow"></div>
               <div className="absolute -left-6 top-1/2 w-3 h-3 bg-primary rounded-full animate-pulse-slow"></div>
-              
+
               {/* Enhanced Experience Badge */}
               <div className="absolute -top-8 -left-8 bg-gradient-to-br from-white/95 to-white/80 dark:from-gray-800/95 dark:to-gray-800/80 rounded-full h-20 w-20 flex items-center justify-center shadow-lg border border-primary/30 backdrop-blur-sm z-30">
                 <div className="text-center">
@@ -178,7 +177,7 @@ const Hero = () => {
                   <p className="text-[10px] text-muted-foreground font-medium">Years Exp.</p>
                 </div>
               </div>
-              
+
               {/* Award Badge */}
               <div className="absolute -bottom-6 -right-6 bg-white/90 dark:bg-gray-800/90 rounded-lg p-4 shadow-lg border border-accent/20 backdrop-blur-sm z-30">
                 <div className="flex items-center gap-3">

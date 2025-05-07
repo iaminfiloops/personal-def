@@ -94,7 +94,7 @@ const Header = () => {
           <div className="relative">
             <span className="absolute -inset-1 -skew-y-3 bg-accent/20 rounded-md" />
             <span className="relative text-accent font-bold">P</span>
-            <span className="relative">inky Paul</span>
+            <span className="relative">inky Paul Mondal</span>
           </div>
         </Link>
 
