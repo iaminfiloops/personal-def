@@ -3,14 +3,55 @@ import Footer from "@/components/layout/Footer";
 import Hero from "@/components/Hero";
 import FeaturedCompanies from "@/components/FeaturedCompanies";
 import BlogPreview from "@/components/BlogPreview";
+import FounderInsights from "@/components/FounderInsights";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowRight, UserRound, Briefcase, FileText, Heart } from "lucide-react";
 import { Helmet } from "react-helmet";
 import { PersonStructuredData } from "@/components/SEO/StructuredData";
 import LocalBusinessSchema from "@/components/SEO/LocalBusinessSchema";
+import { useState, useEffect } from "react";
 
 const Index = () => {
+  // State for founder insights
+  const [insights, setInsights] = useState([]);
+  const [featuredInsight, setFeaturedInsight] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch founder insights
+  useEffect(() => {
+    const fetchInsights = async () => {
+      try {
+        // Fetch featured insight
+        const featuredResponse = await fetch('/api/insights?featured=true&limit=1');
+        const featuredData = await featuredResponse.json();
+
+        if (featuredData.insights && featuredData.insights.length > 0) {
+          setFeaturedInsight(featuredData.insights[0]);
+        }
+
+        // Fetch recent insights (excluding the featured one)
+        const recentResponse = await fetch('/api/insights?limit=3');
+        const recentData = await recentResponse.json();
+
+        if (recentData.insights) {
+          // Filter out the featured insight if it exists
+          const filteredInsights = featuredInsight
+            ? recentData.insights.filter(insight => insight.id !== featuredInsight.id)
+            : recentData.insights;
+
+          setInsights(filteredInsights.slice(0, 3));
+        }
+      } catch (error) {
+        console.error('Error fetching insights:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchInsights();
+  }, []);
+
   return (
     <>
       <Helmet>
@@ -78,9 +119,8 @@ const Index = () => {
         {/* Hero Section */}
         <Hero />
 
-        {/* About Preview Section */}
         <section className="py-16 md:py-24">
-          <div className="container mx-auto px-6">
+          {/* <div className="container mx-auto px-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
               <div className="order-2 md:order-1">
                 <span className="chip bg-secondary text-foreground mb-3">About Me</span>
@@ -110,12 +150,11 @@ const Index = () => {
                   />
                 </div>
 
-                {/* Floating accent elements */}
                 <div className="absolute -top-4 -right-4 w-24 h-24 bg-accent/10 rounded-full blur-2xl"></div>
                 <div className="absolute -bottom-8 -left-8 w-40 h-40 bg-primary/10 rounded-full blur-3xl"></div>
               </div>
             </div>
-          </div>
+          </div> */}
         </section>
 
         {/* Features Section */}
@@ -175,6 +214,14 @@ const Index = () => {
 
         {/* Featured Companies Section */}
         <FeaturedCompanies />
+
+        {/* Founder Insights Section */}
+        {!loading && (insights.length > 0 || featuredInsight) && (
+          <FounderInsights
+            insights={insights}
+            featured={featuredInsight}
+          />
+        )}
 
         {/* Blog Preview Section */}
         <BlogPreview />

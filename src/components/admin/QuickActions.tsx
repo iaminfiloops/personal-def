@@ -16,6 +16,11 @@ const QuickActions = () => {
           </Link>
         </Button>
         <Button asChild className="w-full">
+          <Link to="/admin/insights/new">
+            Create Founder Insight
+          </Link>
+        </Button>
+        <Button asChild className="w-full">
           <Link to="/admin/portfolio/new">
             Add New Company
           </Link>

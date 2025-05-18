@@ -1,18 +1,19 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { EditIcon, FileTextIcon, BriefcaseIcon } from "lucide-react";
+import { EditIcon, FileTextIcon, BriefcaseIcon, LightbulbIcon } from "lucide-react";
 
 interface StatsProps {
   blogPosts: number;
   companies: number;
   messages: number;
+  insights?: number;
   isLoading?: boolean;
 }
 
-const DashboardStats = ({ blogPosts, companies, messages, isLoading = false }: StatsProps) => {
+const DashboardStats = ({ blogPosts, companies, messages, insights = 0, isLoading = false }: StatsProps) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-lg">Blog Posts</CardTitle>
@@ -40,7 +41,7 @@ const DashboardStats = ({ blogPosts, companies, messages, isLoading = false }: S
           )}
         </CardContent>
       </Card>
-      
+
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-lg">Portfolio Companies</CardTitle>
@@ -68,7 +69,7 @@ const DashboardStats = ({ blogPosts, companies, messages, isLoading = false }: S
           )}
         </CardContent>
       </Card>
-      
+
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-lg">Contact Messages</CardTitle>
@@ -90,6 +91,34 @@ const DashboardStats = ({ blogPosts, companies, messages, isLoading = false }: S
                 <Link to="/admin/messages">
                   <FileTextIcon className="mr-2 h-4 w-4" />
                   View Messages
+                </Link>
+              </Button>
+            </>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-lg">Founder Insights</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {isLoading ? (
+            <div className="flex flex-col space-y-4">
+              <div className="w-12 h-8 bg-muted animate-pulse rounded"></div>
+              <div className="w-full h-4 bg-muted animate-pulse rounded"></div>
+              <div className="w-full h-9 bg-muted animate-pulse rounded mt-2"></div>
+            </div>
+          ) : (
+            <>
+              <div className="text-3xl font-bold mb-2">{insights}</div>
+              <p className="text-muted-foreground text-sm mb-4">
+                Published founder insights
+              </p>
+              <Button asChild className="w-full">
+                <Link to="/admin/insights">
+                  <LightbulbIcon className="mr-2 h-4 w-4" />
+                  Manage Insights
                 </Link>
               </Button>
             </>

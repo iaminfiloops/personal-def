@@ -15,6 +15,8 @@ import NotFound from "./pages/NotFound";
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminBlogEdit from "./pages/admin/BlogEdit";
 import AdminPortfolioEdit from "./pages/admin/PortfolioEdit";
+import InsightsManager from "./pages/admin/InsightsManager";
+import InsightEditor from "./pages/admin/InsightEditor";
 
 // Add missing routes for blog post and portfolio item detail pages
 import BlogPost from "./pages/BlogPost";
@@ -22,6 +24,8 @@ import PortfolioDetail from "./pages/PortfolioDetail";
 import PortfolioForm from "./components/admin/PortfolioForm";
 import BlogForm from "./components/admin/BlogForm";
 import Gallery from "./pages/Gallery";
+import Insights from "./pages/Insights";
+import InsightDetail from "./pages/InsightDetail";
 
 // Import analytics components
 import GoogleAnalytics from "./components/analytics/GoogleAnalytics";
@@ -39,7 +43,7 @@ const App = () => (
           {/* Add analytics tracking */}
           <GoogleAnalytics />
           <FacebookPixel />
-          
+
           <Routes>
             {/* Public routes */}
             <Route path="/" element={<Index />} />
@@ -49,11 +53,13 @@ const App = () => (
             <Route path="/contact" element={<Contact />} />
             <Route path="/login" element={<Login />} />
             <Route path="/gallery" element={<Gallery />} />
-            
-            {/* Add routes for individual blog posts and portfolio items */}
+            <Route path="/insights" element={<Insights />} />
+
+            {/* Add routes for individual blog posts, portfolio items, and insights */}
             <Route path="/blog/:id" element={<BlogPost />} />
             <Route path="/portfolio/:id" element={<PortfolioDetail />} />
-            
+            <Route path="/insights/:slug" element={<InsightDetail />} />
+
             {/* Protected admin routes */}
             <Route path="/admin" element={
               <ProtectedRoute requireAdmin>
@@ -90,7 +96,24 @@ const App = () => (
                 <PortfolioForm />
               </ProtectedRoute>
             } />
-            
+
+            {/* Insights admin routes */}
+            <Route path="/admin/insights" element={
+              <ProtectedRoute requireAdmin>
+                <InsightsManager />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/insights/new" element={
+              <ProtectedRoute requireAdmin>
+                <InsightEditor />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/insights/edit/:id" element={
+              <ProtectedRoute requireAdmin>
+                <InsightEditor />
+              </ProtectedRoute>
+            } />
+
             {/* Catch-all route */}
             <Route path="*" element={<NotFound />} />
           </Routes>

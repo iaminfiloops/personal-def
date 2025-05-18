@@ -2,10 +2,27 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
-const SUPABASE_URL = "https://nhvdajjzfysdqbqrmkae.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5odmRhamp6ZnlzZHFicXJta2FlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQzMzQyNjEsImV4cCI6MjA0OTkxMDI2MX0.t4YqHKkKulYbF7y4-H85jo6y7bGgJAtCOhsy5gf7joE";
+/**
+ * Supabase client configuration following industry best practices:
+ * 1. Use direct URL and key values to avoid runtime errors in browser environments
+ * 2. Add proper TypeScript typing for better developer experience
+ * 3. Configure auth options for security and user experience
+ */
 
-// Import the supabase client like this:
-// import { supabase } from "@/integrations/supabase/client";
+// Supabase connection details
+const SUPABASE_URL = 'https://uiwfzpexouutempclndu.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVpd2Z6cGV4b3V1dGVtcGNsbmR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY1OTYyMTQsImV4cCI6MjA2MjE3MjIxNH0.OnS2Em3YSwdYemqYA8sx-18-smptLH6H7q8gjfomjaA';
 
-export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+/**
+ * Import the supabase client like this:
+ * import { supabase } from "@/integrations/supabase/client";
+ */
+
+// Create a single, type-safe Supabase client instance
+export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true
+  }
+});

@@ -148,7 +148,7 @@ const Hero = () => {
                     {/* Main Image with Proper Aspect Ratio and Responsive Height */}
                     <div className="relative pt-[125%] w-full">
                       <img
-                        src="https://res.cloudinary.com/dyiso4ohk/image/upload/v1743129881/WhatsApp_Image_2025-03-20_at_17.24.29_17889df1_ohnsxy.jpg"
+                        src="https://res.cloudinary.com/dyiso4ohk/image/upload/v1747532376/Adobe_Express_-_file_clkzg3.png"
                         alt="Pinky Paul Mondal - Social Entrepreneur"
                         className="absolute inset-0 w-full h-full object-cover"
                       />
@@ -230,7 +230,7 @@ const Hero = () => {
       </div>
 
       {/* Add these styles to your global CSS or in a style tag */}
-      <style jsx global>{`
+      <style >{`
         @keyframes wave-slow {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-15px); }
